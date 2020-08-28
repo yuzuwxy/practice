@@ -1,0 +1,27 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main() {
+	int tu[10][10];
+	int n;
+	scanf("%d",&n);
+	memset(tu,0,sizeof(tu));
+	int x=1,y=1;
+	tu[x][y]=1;
+	int k=1;
+	while(k<=n*n) {
+		while(x<=n&&!tu[x][y+1]) tu[x][++y]=++k;
+		while(y<=n&&!tu[x+1][y]) tu[++x][y]=++k;
+		while(y>=1&&!tu[x][y-1]) tu[x][--y]=++k;
+		while(x>=1&&!tu[x-1][y]) tu[--x][y]=++k;
+	}
+	for(int i=1;i<=n;i++) {
+		for(int j=1;j<=n;j++) {
+			if(tu[i][j]<10) printf("  %d",tu[i][j]);
+			else printf(" %d",tu[i][j]);
+		}
+		printf("\n");
+	}
+	return 0;
+}
+
+/*这是个错的，暂时还没想通哪错了，一变方向直接加10或减10，不知道哪来的*/
