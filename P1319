@@ -1,0 +1,25 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+int tu[210][210];
+int n;
+
+int main() {
+	//int cnt=0;
+	int k=0;
+	bool flag=1;
+	scanf("%d",&n);
+	int sum=0;
+	while(sum<n*n) {
+		int x;
+		scanf("%d",&x);
+		sum+=x;
+		flag=!flag;                   //ture和false互转
+		for(int j=1;j<=x;j++) {
+			k++;
+			printf("%d",flag);                 //printf输出bool型变量以整型的形式输出
+			if(k%n==0) printf("\n");
+		}
+	}
+	return 0;
+}
