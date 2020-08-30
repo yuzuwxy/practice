@@ -58,3 +58,31 @@ int main() {
 
 
 喔好像也没啥问题，在线IDE里可以过但是Dev里输不出东西
+
+
+#include<bits/stdc++.h>
+using namespace std;
+int main() {
+	char c,a='0';
+	int num[40010],i=1;
+	memset(num,0,sizeof(num));
+	int tot=0; 
+	while(cin>>c) {
+		tot++;
+		if(a==c) {
+			num[i]++;
+		}
+		else {
+			a=c;
+			i++;
+			num[i]++;
+		}
+	}
+    int ans=sqrt(tot);                       
+	printf("%d ",ans);              //为啥直接printf("%d",sqrt(tot))是错的 , 但是printf("%.0lf",sqrt(tot))是对的
+	for(int j=1;j<=i;j++) {
+		printf("%d ",num[j]);
+	}
+	printf("\n");
+	return 0;
+}
