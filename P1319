@@ -29,33 +29,6 @@ int main() {
 #include<bits/stdc++.h>
 using namespace std;
 int main() {
-	char c,a='0';
-	int num[40010],i=1;
-	memset(num,0,sizeof(num));
-	int tot=0;
-//	for(int i=0;i<s.length();i++) 
-	while(cin>>c) {
-		tot++;
-		if(a==c) {
-			num[i]++;
-		}
-		else {
-//			printf("%d ",num);
-			a=c;
-			num[++i]++;
-		}
-	}
-	printf("%d ",sqrt(tot));
-	for(int j=1;j<=i;j++) {
-		printf("%d ",num[i]);
-	}
-	printf("\n");
-	return 0;
-}
-
-#include<bits/stdc++.h>
-using namespace std;
-int main() {
 	vector<string> ju;
 	string s;
 	while(cin>>s) {
@@ -75,11 +48,13 @@ int main() {
 		else {
 			printf("%d ",num);
 			a=s[i];
-			num=0;
+			num=1; 
 		}
 	}
+	printf("%d ",num);
 	printf("\n");
 	return 0;
 }
 
-两个代码，类似的输入方式，输进去出不来东西
+
+喔好像也没啥问题，在线IDE里可以过但是Dev里输不出东西
