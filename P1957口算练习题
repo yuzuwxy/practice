@@ -12,29 +12,29 @@ int main ()
 {
 	int n;
 	cin>>n;//输入n 
-	char ch;//要输入的字母 
-	string s[n];//存放最后的表达式 
+	char ch;
+	string s[n];//这个！！是个字符串数组！！用来存每个算式，每个算式都是一个字符串s[i]；而且string可以直接出长度，方便输出算式长度  
 	for(int i=0;i<n;i++)//开始循环输入 
 	{
-		string st;//用来存放数字 
-		stringstream io;//转换数字 
-		int a,b,ans=0;//ans是答案 
-		if(!(cin>>a))//利用了cin的性质 
+		string st;
+		stringstream io;//stringstream流用来转换，因为最后输出的算式是字符串类型存在s[i]里，要把数字转成字符串
+		int a,b,ans=0;
+		if(!(cin>>a))//用cin判断输入的变量a数据类型 ： 如果不是数字 
 		{
-			cin.clear();
+			cin.clear();       //清除缓存重新输入 字母和第一个数字
 			cin>>ch>>a;
 		}
-		cin>>b;
-		io<<a;io>>s[i];io.clear();//接下来对ch进行判断 
+		cin>>b;         //另一个数据
+		io<<a;io>>s[i];io.clear();//把第一个数转化成字符串类型存在s[i]里；输入的数据没有字母时，标志运算类型的字符ch不会改变，与上一行一样
 		if(ch=='a')
 		{
 			ans=a+b;
-			s[i]+='+';
+			s[i]+='+';       //字符串可以直接相加往后续
 			io<<b;io>>st;io.clear();//io每次用完后要记得清空哦
 			s[i]+=st;
 			s[i]+='=';
 			io<<ans;io>>st;io.clear();
-			s[i]+=st;
+			s[i]+=st;        //一直往后续知道整个算式存进去
 		}//以此类推
 	if(ch=='b')
 		{
@@ -60,7 +60,7 @@ int main ()
 	for(int i=0;i<n;i++)//循环输出结果 
 	{
 		cout<<s[i]<<endl;
-		cout<<s[i].size();
+		cout<<s[i].size();    //size()函数得到字符串长度
 		if(i!=n-1)cout<<endl;
 	}
 }
