@@ -78,7 +78,7 @@ int main(){
 	char s[100],b[10];//s存储最终的字符串，b临时变量
 	cin>>n;
 	for(int i=0;i<n;i++){
-		cin>>b;//输入一串字符，有可能是运算符，也有可能是数字
+		cin>>b;//cin读到空格
 		if(b[0]>='a' && b[0]<='z'){
 			a=b[0];//如果是运算符就存入a，然后输入数字
 			cin>>c>>d;
@@ -88,7 +88,7 @@ int main(){
 		}
 		memset(s,0,sizeof(s));//清空原有的字符串，防止长度判断错误
 		if(a=='a')//用sprintf格式化
-			sprintf(s,"%d+%d=%d",c,d,c+d);
+			sprintf(s,"%d+%d=%d",c,d,c+d);       //把这个这个这个转化成字符串
 		else if(a=='b')
 			sprintf(s,"%d-%d=%d",c,d,c-d);
 		else if(a=='c')
