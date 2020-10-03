@@ -31,31 +31,33 @@ int main()
     string a;
     while(cin>>a)
     {
-        vector<long> b;
+        vector<long> b;         //大佬们可能都比较喜欢STL
         string c;
         int j;
-        for(j=0;a[j]=='5';j++);
-        for(int i=j;i<a.length();i++)
+        for(j=0;a[j]=='5';j++);         //把字符串前边的‘5’跳过去
+        for(int i=j;i<a.length();i++)               //开始把后边的字符串转化为数字
         {
-            if(a[i]!='5')
-                c+=a[i];
-            else if(a[i-1]!='5')
-            { 
-                b.push_back(atol(c.c_str()));
-                c = "";
+            if(a[i]!='5')			
+                c+=a[i];                         //把每个“数字”转成字符串
+            else if(a[i-1]!='5')		//注意是a[i-1]!=5,因为如果直接else，可能会有连着几个五的情况，把c=""压进去 a[i-1]!=5才真正表示一个数的末尾
+            { 	
+                b.push_back(atol(c.c_str()));		//atol是C库里的函数，把字符串转化成长整型 	
+                c = "";			//清空 
             }
         }
         
-        if(a[a.length()-1]!='5')
+        if(a[a.length()-1]!='5')		  //如果是一个末尾有5的字符串，最后一个有效数就已经被压进去了。如果末尾没有5，最后一个有效数就被存在c串里没有压进去
             b.push_back(atol(c.c_str()));
-        sort(b.begin(),b.end(),greater<long>());
+        sort(b.begin(),b.end(),greater<long>());		//对vector进行排序 
         cout <<b[0];
         
-        for(int i=1;i<b.size();i++)
+        for(int i=1;i<b.size();i++)        //大佬的输出习惯，不在末尾留空格
             cout<<" "<<b[i];
         cout<<endl;
     }
 } 
+
+//我不想等了，我要交了
 
 //大佬的代码
 
