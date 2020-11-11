@@ -7,3 +7,26 @@ T1
 //首先探讨条件：x mod a ≥ a / 2，我们发现要想是这个等式成立，就要使左边大右边小，而左边大的实现方法就是让a > x，这样取余永远为x ，而右边小的实现方法就是要让a 尽量小。 
 //则我们可以发现x最大为r，我们就可以定a为r + 1，那么即可进行判断了。怎么判断呢？还有x的值没有确定，我们试想，如果x的最小值都满足，那么是不是这个a就行，否则即是不可行的。
 //我们可以进行判断了。要注意的一点就是由于是四舍五入，故我们进行a / 2时应该向上取整，我们也可以直接( a + 1 ) / 2即可。
+//挠破脑壳都没想出来呜呜呜
+//AC代码
+#include<iostream>
+#include<cstdio>
+#include<cmath>
+#include<string>
+#include<cstring>
+#include<algorithm>
+using namespace std;
+
+int main() {
+	int t,left,right;
+	scanf("%d",&t);
+	for(int i=1;i<=t;i++) {
+		scanf("%d%d",&left,&right);
+	 	int a=right+1;
+		if((left%a)>=((a+1)/2)) {
+			printf("YES\n");	
+		}
+		else printf("NO\n");
+	}
+	return 0;
+}
