@@ -6,6 +6,9 @@
 
 //AC代码
 
+//水水水题居然也写的满是bug
+//倒也没有满是，一点点，没有测试数据有点难受，应该是没问题，写法肯定还能优化。
+
 #include<stdio.h>
 #include<string.h>
 #include<math.h>
@@ -19,7 +22,8 @@ void doit() {
 	for(i=0;i<len;i++) {
 		if(ch[i]=='-') flag=-1;
 		if(ch[i]>='0'&&ch[i]<='9') {
-			sum+=sum*10+ch[i]-'0';
+			//sum+=sum*10+ch[i]-'0';
+			sum=sum*10+ch[i]-'0';
 		}
 		if(ch[i]==' ') {
 			num[++cnt]=flag*sum;
