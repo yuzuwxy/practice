@@ -31,7 +31,7 @@ void doit() {
 			sum=0;
 		}
 	}
-	num[++cnt]=sum;
+	num[++cnt]=flag*sum;
 }
 
 void insertt(int i) {
@@ -71,5 +71,65 @@ int main() {
 		printf(" %d",num[i]);
 	printf("\n");
 
+	return 0;
+}
+
+
+//改过略有优化但是没过的代码
+#include<stdio.h>
+#include<string.h>
+
+int num[10001],x;   
+int tot=0;
+char ch[202];
+
+void doit() {
+	int i,sum=0,flag=1;
+	int len=strlen(ch);
+	for(i=0;i<len;i++) {
+		if(ch[i]=='-') flag=-1;
+		if(ch[i]>='0'&&ch[i]<='9') 
+			sum=sum*10+ch[i]-'0';
+		if(ch[i]==' ') {
+			num[++tot]=flag*sum;
+			flag=1;
+			sum=0;
+		}
+	}
+	num[++tot]=flag*sum;
+}
+
+void insertt(int cnt) {
+	tot++;
+	//pritnf("%d",tot);
+	int i;
+	for(i=tot;i>cnt;i--) 
+		num[i]=num[i-1];
+	num[cnt]=x;
+}
+
+int main() {
+	//void insertt(int cnt);
+	gets(ch);
+	scanf("%d",&x);
+	doit();
+
+	int head=0,flag=0,i;
+	if((x-num[1])*(num[1]-num[tot])>=0) 
+		num[0]=x,head=1;
+	else {
+		for(i=2;i<=tot;i++) 
+			if((num[i-1]-x)*(x-num[i])>=0) 
+				insertt(i),flag=1;
+	}
+	if(!flag) num[++tot]=x;
+
+//	int j;
+//	for(j=1;j<=tot;j++) printf("%d ",num[j]);
+
+	if(head) printf("%d ",num[0]);
+	printf("%d",num[1]);
+	for(i=2;i<=tot;i++) 
+		printf(" %d",num[i]);
 	return 0;
 }
