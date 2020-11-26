@@ -14,3 +14,46 @@
 3 1 2
 3 2 1
 //完犊子自己写的搜索回溯（也许是？） 账号密码忘了代码还得重写呜呜呜
+//自己认真写的搜索回溯了叭，第一次写还感觉有点困难，第二次就很顺啦，写完调完也就十分钟吧
+#include<iostream>
+#include<cstdio>
+
+using namespace std;
+
+int n;
+int a[10];
+bool fnum[10];
+
+void print() {
+	printf("%d",a[1]);
+	for(int i=2;i<=n;i++)
+		printf(" %d",a[i]);
+	printf("\n");
+}
+
+void array(int cnt,int pos) {
+	if(pos==n) {
+		a[n]=cnt;   //到了最后一个数了
+		print();    //可以输出了
+		return;     //返回上一层
+	}
+	a[pos]=cnt;
+	fnum[cnt]=1;    //把这个数字放在这个位置并标志已经排过
+	for(int i=1;i<=n;i++) 
+		if(fnum[i]==0) {    //这个数字还没有放过，可以排进队里
+			array(i,pos+1);
+			fnum[i]=0;    //这个数字的情况排在这个位置的情况讨论之后需要对状态重置
+		}
+}
+
+int main(){
+	scanf("%d",&n);
+	for(int i=1;i<=n;i++) {  //会有1，2，3，……打头的情况
+		memset(fnum,0,sizeof(fnum));//最开始写在了函数退出的if里（肯定是错的啦），每次换一个排头，就代表顺序全部乱一次，要重新排
+		array(i,1);//既然已经决定了把数列全都排好后放在一个数组里输出，就需要标记数组的位置也就是下标啦，所以得在函数中数带着位置走
+	}
+	return 0;
+}
+
+以及为什么排出来一定是字典序？
+因为对数的遍历是按照顺序来的，最先遇到的没有放置过的数一定是满足要求最小的，然后才往大的放
