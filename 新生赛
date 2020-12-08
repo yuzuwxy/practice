@@ -130,3 +130,52 @@ int main() {
 
 //然后WA掉了
 //为什么会WA掉！！！！！！
+
+
+//我计导考完了！！！！
+#include<cstdio>
+#include<iostream>
+#include<cstring>
+#include<algorithm>
+#include<queue>
+#include<stack>
+#include<set>
+#include<map>
+#include<vector>
+#include<cmath>
+const int maxn=1e5+5;
+typedef long long ll;
+using namespace std;
+int a[20],car[20],ans;	
+int n,w;
+bool cmp(int x,int y){//搜索顺序优化 
+	return x>y;
+}
+void dfs(int now,int count){
+	if(count>=ans)//剪枝 
+	    return ;//已经没有必要了 
+	if(now>=n+1){
+		ans=min(count,ans);
+		return ;
+	}//满足条件，更新 
+	for(int i=1;i<=count;i++){
+		if(car[i]+a[now]<=w){//能装下 
+		    car[i]+=a[now];
+			dfs(now+1,count);
+			car[i]-=a[now];			
+		}		     
+	}
+	car[count+1]=a[now];//装不下了，再要一辆车 
+	dfs(now+1,count+1);
+	car[count+1]=0;
+}
+int main(){
+	scanf("%d%d",&n,&w);
+	for(int i=1;i<=n;i++)
+		scanf("%d",&a[i]);
+	sort(a+1,a+n+1,cmp);//预先排一下序 
+	ans=n;//最多的可能就是一个猫一个车 
+	dfs(1,0);//入口 
+	printf("%d\n",ans);
+	return 0;
+}
