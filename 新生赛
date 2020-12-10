@@ -179,3 +179,62 @@ int main(){
 	printf("%d\n",ans);
 	return 0;
 }
+
+
+//又是一个不知道为什么但是WA掉的代码
+#include<iostream>
+#include<cstdio>
+#include<cmath>
+#include<algorithm>
+#include<string>
+#include<cstring>
+#include<bits/stdc++.h>
+
+using namespace std;
+
+int n,w;
+int a[20],f[20];
+//数组f用来放每个筐里已经装的猫的重量
+int ans,sum;
+bool flag=0;
+
+int cmp(int x,int y) {
+	return x>y;
+}//即将猫的重量升序排序
+
+void dfs(int x) {    //深度优先搜索，把第x只猫装进来了
+	if(x==n+1) { //因为第i只猫装完直接搜第i+1只猫，所以判断终点是n+1
+		flag=1;
+		return;
+	}//深度优先搜索，最先到的一定是最可行的
+	for(int i=1;i<=ans;i++) {  //开始往这么多筐里一只一只装猫
+		if(f[i]+a[x]<=w) {  //如果这个筐里还能装
+			f[i]+=a[x];   //暂且先装进去
+			dfs(x+1);  //装下一只 
+			//装完回来觉得不行
+			f[i]-=a[x]; //就不往这个筐里装
+			if(flag) return;
+		}
+	}
+	return ;
+}
+
+int main() {
+	scanf("%d%d",&n,&w);
+	for(int i=1;i<=n;i++) {
+		scanf("%d",&a[i]);
+		sum+=a[i];
+	}
+	sort(a+1,a+n+1,cmp);   
+	for(ans=sum/w;ans<=18;ans++) {    //最少需要的框就是每一个都正正好装满，最多也不过是每个框只装一个
+		memset(f,0,sizeof(f));       //开始判断这么多框能不能装得下，刚开始每只猫都没被装进去
+		dfs(1);     //也许是装了第一只猫进去的意思？
+		//flag=0;
+		if(flag==1) {     //如果可行
+			printf("%d\n",ans);
+			break;
+		}
+	}
+	return 0;
+}
+//亏我仔细写了很久的注释呜呜呜
