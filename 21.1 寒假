@@ -445,7 +445,7 @@ int main() {
     while(t--) {
         int n;
         scanf("%d",&n);
-        for(int i=1;i<=MAXN;i++) {
+        for(int i=1;i<=MAXN;i++) {     //啊Σ(っ °Д °;)っ做了标记的这两个地方，有等于号会wa掉第三个点
             arr[i].p=0;
         }
         for(int i=1;i<=n;i++) {
@@ -456,7 +456,7 @@ int main() {
             arr[num].p++;
         }
         int flag=0;
-        for(int i=1;i<=MAXN;i++) {
+        for(int i=1;i<=MAXN;i++) {	//没有等于号又会t掉第四个点   如果把MAXN换成n就又对了   (っ °Д °;)っ到底是怎么肥四啊啊啊啊
             if(arr[i].p==1) {
                 printf("%d\n",arr[i].index);
                 flag=1;
@@ -467,7 +467,71 @@ int main() {
     }
     return 0;
 }
+//鸽掉，明天看
 
+T4 ： https://codeforces.com/problemset/problem/1454/C
+题意：（题目肯定不是这么描述的，自己提炼一下）给出一组数，选择某个数列中存在的数（必须是全部的位置）把这一列数分割成若干组，问最少可以分出几组（不包含选出的数）
+	I can't write Chinese.wuwuwu 啊好了，这其实跟题目表述的选择一个数i，每次去掉全部数列中不包含这个数的子列（连续且完整），问最少的操作数后可以使数列中的数全部相同
+思路：根据提炼出来的意思只需要找每个数出现了几次，同时注意特殊情况————某个数连续出现，某个数出现在开头或结尾，这两种情况对最后的统计都有影响
+#include<iostream>
+#include<bits/stdc++.h>
+#include<cstdio>
+#include<math.h>
+#include<string>
+#include<algorithm>
+#include<cstring>
+#define MAXN 200010
+
+using namespace std;
+
+int arr[MAXN];
+int p[MAXN];
+
+int min(int a,int b) {
+    if(a>b) return b;
+    return a;
+}
+
+int main() {
+    int t;
+    scanf("%d",&t);
+    while(t--) {
+        memset(arr,0,sizeof(arr));
+        memset(p,0,sizeof(p));
+        int n;
+        scanf("%d",&n);
+        int _n=n;
+        for(int i=1;i<=_n;i++) {
+            scanf("%d",&arr[i]);
+            if(i!=1) {
+                if(arr[i]==arr[i-1]) {     //去掉连续的，看完我都惊了Σ(っ °Д °;)っ，真的学到了学到了
+                    i--;
+                    _n--;
+                }
+            }
+        }
+        for(int i=1;i<=_n;i++) {
+            p[arr[i]]++;
+        }
+        int ans=999999;
+        if(_n==1) {
+            printf("0\n");
+            continue;
+        }
+        for(int i=1;i<=n;i++) {
+            if(p[i]) {
+                ans=min(ans,p[i]);       //某个数出现的次数最少，分割出的子列一定最小
+            }
+        }
+        if(arr[1]==arr[_n]) {
+            printf("%d\n",min(ans+1,p[arr[1]]-1));     //在一般位置，子列数是频数+1，在开头和结尾（这是同时出现的特殊位置）是频数-1
+        }
+        else {
+            printf("%d\n",min(ans+1,min(p[arr[1]],p[arr[_n]])));     //只出现开头或结尾，子列数就是频数
+        }
+    }
+    return 0;
+}
 
 
 
