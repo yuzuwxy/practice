@@ -552,22 +552,23 @@ using namespace std;
 
 ll arr[MAXN];
 ll ans;
-ll mid[MAXN];
+ll mid[MAXN];				//mid数组相当于一个中间的过渡量
 
-void dfs(ll sum,ll k,ll la) {
-    if(sum%la==0) {
+void dfs(ll sum,ll k,ll la) {    //就是深搜！！！我看懂了！！！   la始终是前面那个数
+    if(sum%la==0) {			//如果这个得到的这个较大的因数，是之前的那个较小因数的倍数，就判断得到的这个新的序列长度是不是比之前的长
         mid[k]=sum;
         if(k+1>ans) {
             ans=k+1;
-            for(int i=0;i<ans;++i) 
+            for(int i=0;i<ans;++i) 		//更长就赋值
                 arr[i]=mid[i];
         }       
     }
+    else return ;			//如果不是倍数，就需要上一个换上一个因数，退回上一级
     
-    for(ll i=la;i*i<=sum;i+=la) {
+    for(ll i=la;i*i<=sum;i+=la) {			//每次加la，保证现在这个数的较小因数一定是前面那个数倍数
         if(sum%i==0&&i>1) {
-            mid[k]=i;
-            dfs(sum/i,k+1,i) ;
+            mid[k]=i;				//就是如果找到了一个因数，就先暂且把这个因数放在过渡量的这个数组里
+            dfs(sum/i,k+1,i) ;			//然后接着往后找，较大因数继续进行拆分
         }
     }
     return ;
@@ -589,9 +590,13 @@ int main() {
         printf("\n");
     }
     return 0;
-}12
+}
+//嘤我居然看懂了
 
+T5 ： https://codeforces.com/problemset/problem/1454/E
+//直接下一题/(ㄒoㄒ)/~~
 
+T6 ： https://codeforces.com/problemset/problem/1454/F
 
 
 
