@@ -597,13 +597,134 @@ T5 ： https://codeforces.com/problemset/problem/1454/E
 //直接下一题/(ㄒoㄒ)/~~
 
 T6 ： https://codeforces.com/problemset/problem/1454/F
+//不会qwq
 
+Day 3
+T1 ： https://codeforces.com/problemset/problem/1461/A
+题意：给出两个整数n和k，造一个字符串，这个字符串的长度是n，包含一个长度为k的回文子串；造出来的字符串只能包含字符'a', 'b', 'c'
+思路：啊做的时候犹豫了一下下，造一个回文串那岂不是aaaaa/bbbbb/ccccc就完了，结果还真是……
+//水题，不用犹豫，敲就是了
+#include<iostream>
+#include<bits/stdc++.h>
+#include<cstdio>
+#include<cmath>
+#include<algorithm>
 
+using namespace std;
 
+int main() {
+    int t;
+    scanf("%d",&t);
+    while(t--) {
+        int n,k;
+        scanf("%d%d",&n,&k);
+        for(int i=1;i<k;i++) {
+            printf("a");      //前面的字符都敲a（b也行）
+        }
+        for(int i=1;i<=n-k+1;i++) {
+            if(i%3==1) printf("a");
+            if(i%3==2) printf("b");
+            if(i%3==0) printf("c");    //后面的全都abcabcabc循环（这肯定不是回文串啦）
+        }
+        printf("\n");
+    }
+    return 0;
+}
+//题目对回文串没有太大要求，要是要求不能这样造就稍稍麻烦了吧（从前往后到k/2又从后往前，啊也还好）
 
+T2 ： https://codeforces.com/problemset/problem/1461/B
+题意：给出n和m分别是矩阵的长和宽，这个矩阵只由'.'和'*'组成，像这样：
+.***.   然后要在这个矩阵里找由'*'组成的圣诞树，像这样：           层数可以从1~k，k<=n（矩阵的行数）
+*****							   *			*就是一个圣诞树
+*****							  ***
+*.*.*							 *****
+思路：啊看到这题就感觉想到了古早时候做的找细胞的题，呜呜呜不光代码不会打，我连样例都看不懂，结果细看好像也不需要很麻烦的搜索。反正我做的很暴力，╮(╯-╰)╭，这也是没办法的事qwq
+      观察发现，这个题它n和m的范围都是500（简直就是暗示要我写暴力），不大，还挺小，够遍历好几遍的了。所以可以先遍历整个矩阵，预处理每个*向左向右分别可以延伸多少个，也就是说最多这个*
+      可以做圣诞树的第几层的中心。
+      预处理完就可以再遍历一次，选取每一个*作为圣诞树的顶点，题目中甚至给出了第i层*的个数，所以可以从每一个顶点开始直向下走看以这个点为中心位扩展的*是否可以做一层。
+      得到最大层数之后，上方的每一层都可以作为一个独立圣诞树最底层，相加得到最终答案。
+//思路说的很累赘，代码要更清楚一点
+#include<iostream>
+#include<bits/stdc++.h>
+#include<cstdio>
+#include<cmath>
+#include<string>
+#include<algorithm>
+#include<cstring>
 
+#define MAXN 200010
 
+using namespace std;
 
+char mat[503][503];
+int val[505][505];
+int ans;
+int m,n;
+
+int doit1(int x,int y) {        //进行预处理的部分
+    int value=0;
+    for(int i=1;y+i<=m&&y-i>=1;i++) {
+        if(mat[x][y+i]=='*'&&mat[x][y-i]=='*') {
+            value++;
+            continue;
+        }
+        break;
+    }
+    return value;
+}
+
+void doit2(int x,int y) {
+    int i=1;
+    int _ans=0;
+    while(1) {
+        if((x+i-1<=n)&&(val[x+i-1][y]>=(i-1))&&(mat[x+i-1][y]=='*')) {   //根据公式计算并判断这一层应该有的*个数
+            _ans++;
+            i++;
+            continue;
+        }
+        break;
+    } 
+    for(int i=2;i<=_ans;i++) //_ans是最多层数
+        ans+=1;
+}
+
+int main() {
+    int t;
+    scanf("%d",&t);
+    while(t--) {
+        ans=0;
+        scanf("%d%d",&n,&m);
+        getchar();
+        for(int i=1;i<=n;i++) {
+            for(int j=1;j<=m;j++)  {
+                mat[i][j]=getchar();
+                if(mat[i][j]=='*') ans++;
+            }
+            getchar();
+        }
+
+        for(int i=1;i<=n;i++) 
+            for(int j=1;j<=m;j++) 
+                if(mat[i][j]=='*') val[i][j]=doit1(i,j);
+
+        /*for(int i=1;i<=n;i++) { 
+            for(int j=1;j<=m;j++) 
+                printf("%d ",val[i][j]);
+            printf("\n");
+         }*/
+
+        for(int i=1;i<=n;i++) 
+            for(int j=1;j<=m;j++) 
+                if(mat[i][j]=='*') doit2(i,j);
+
+        printf("%d\n",ans);
+    }
+    return 0;
+}
+//我也没想到还怪长的
+
+T3 ： https://codeforces.com/problemset/problem/1461/C
+题意：
 
 
 
