@@ -787,9 +787,277 @@ int main() {
 }
 
 T4 ： https://codeforces.com/problemset/problem/1461/D
-题意：给出一个长度为n的数字序列，然后
+题意：给出一个长度为n的数字序列，然后以mid=（min+max）/2为分界线，把原本的数字序列分成两部分，left=[min,mid],right=(mid,max],再把left和right两个数组按照类似的方式分别分成两部分，每次
+      分完各个得到的子序列会得到一个和。然后进行m次询问，每次输入一个数，如果这个数是在操作过程中会得到的和数，就输出YES，否则输出No。
+思路：完了这题我现在又不会了。
+      第一反应是线段树，就是从小到大排列后把一次分裂得到的两个子序列分别作为一个节点的两个子节点，然后再查询
+      //但是因为线段树暂时还没学会呜呜呜没写成
+      起码是想到了排序和用upper_bound()或lower_bound()找mid的序号
+      反应过来其实不需要做线段树
+      就找到了mid的索引，那就可以得到某个子序列的左边界和右边界，前导和就可以直接算出这一段区间的和，那就可以算出可以得到的所有的和了嘛
+      //啊暂且算这是思路叭
+上代码：
+#include<iostream>
+#include<bits/stdc++.h>
+#include<cstdio>
+#include<cmath>
+#include<string>
+#include<algorithm>
+#include<cstring>
 
+#define ll long long
+#define MAXN 100007
 
+using namespace std;
 
+ll arr[MAXN]={0};
+ll sum[MAXN]={0};
+map<ll,ll> ans;        //之后再说
 
+void doit(int l,int r) {      //处理每一个和是否出现过
+    int mid=(arr[l]+arr[r])/2;
+    ans[sum[r]-sum[l-1]]=1;
+    int pos=upper_bound(arr+l,arr+r+1,mid)-arr;
+    if(pos<=r) {
+        doit(l,pos-1);
+        doit(pos,r);
+    }
+    return ;
+}
+
+void solve() {
+    ans.clear();    
+    arr[MAXN]={0};
+    sum[MAXN]={0};
+    int n,q;
+    scanf("%d%d",&n,&q);
+    for(int i=1;i<=n;i++) {
+        scanf("%lld",&arr[i]);
+    }
+    sort(arr+1,arr+n+1);
+    for(int i=1;i<=n;i++) {
+        sum[i]=sum[i-1]+arr[i];      //前导和
+    }
+    doit(1,n);
+    ll x;
+    while(q--) {
+        scanf("%lld",&x);
+        if(ans[x]==1) printf("Yes\n");
+        else printf("No\n");
+    }
+}
+
+int main() {
+    int t;
+    scanf("%d",&t);
+    while(t--) {
+        solve();
+    }
+    return 0;
+}
+
+T5 ： https://codeforces.com/problemset/problem/1461/E
+https://vjudge.net/contest/416896#problem/E
+我肯定不会啦hhhhh
+
+Day 4  //好几天份的不想学习
+
+T1 : https://codeforces.com/problemset/problem/1451/A
+题意：给出一个数，然后对这个数可以让它除一个不是它本身的因数，或者让它减一，输出让这个数变成1的操作数
+思路：很好想其实，偶数可以直接除 除2得到的 商，然后减去1，变成1；奇数的话就减去1变成偶数，然后做对偶数做的操作。
+      然后就是非常显而易见的特殊情况，这个数本来就是1，这个数本身就是2，这个数减去1后变成的偶数是2
+代码：
+#include<iostream>
+#include<bits/stdc++.h>
+#include<cstdio>
+#include<cmath>
+#include<algorithm>
+
+using namespace std;
+
+int main() {
+    int t;
+    scanf("%d",&t);
+    while(t--) {
+        int n;
+        scanf("%d",&n);
+        if(n==1) {
+            printf("0\n");
+            continue;
+        }
+        if(n==2) {
+            printf("1\n");
+            continue;
+        }
+        if(n==3||n%2==0) {
+            printf("2\n");
+            continue;
+        }
+        if(n%2==1) {
+            printf("3\n");
+            continue;
+        }
+    }
+    return 0;
+}
+//水题实锤
+
+T2 ： https://codeforces.com/problemset/problem/1451/B
+题意：给出一串只有0和1 的数字串长度为n，然后是m组测试数据，每一组测试数据有两个数l和r，以这两个数为开头索引和结束索引会得到一个原来数字串的子串，判断是否可以在原来序列里找到一个子序列（
+      （索引可以不连续），它的每一个字符在原来序列里对应的索引和测试数据不全相等。
+思路：还是要找最低要求，连最低的要求都可以满足，那一定满足题意。那最低要求是什么嘞？中间的字符都取测试数据给的子串，开头和结尾的字符在其他位置找（顺序不能变化），第一个字符往前找，最
+      后一个字符往后找。
+//不难，好好想想
+上代码：
+#include<iostream>
+#include<algorithm>
+#include<iomanip>
+#include<set>
+#include<queue>
+#include<stack>
+#include<vector>
+#include<map>
+#include<cstring>
+#include<string>
+#include<cmath>
+#include<cstdio>
+typedef long long ll;
+using namespace std;
+int main() {
+	int t;
+    scanf("%d",&t);
+	while(t--)
+	{
+		int n,q;
+        scanf("%d%d",&n,&q);
+		string s;
+        cin>>s;
+		while(q--)
+		{
+			int l,r;
+            scanf("%d%d",&l,&r);
+			l--;r--;
+			int flag=0;
+			for(int i=0;i<l;i++)
+			    if(s[i]==s[l])  flag=1;
+			for(int i=r+1;i<n;i++)
+			    if(s[i]==s[r])  flag=1;
+			if(flag) cout<<"YES"<<endl;
+			else cout<<"NO"<<endl; 
+		}
+	} 
+	return 0;
+}
+
+莫名其妙wa掉的代码：
+#include<iostream>
+#include<bits/stdc++.h>
+#include<cstdio>
+#include<cmath>
+#include<string>
+#include<algorithm>
+#include<cstring>
+
+#define MAXN 200010
+
+using namespace std;
+
+int main() {
+    int t;  
+    scanf("%d",&t);
+    while(t--) {
+        int n,q;
+        char ch[111];
+        scanf("%d%d",&n,&q);
+        fflush(stdin);
+        scanf("%s",ch);
+        for(int i=1;i<=q;i++) {
+            int ll,r;
+            scanf("%d%d",&ll,&r);
+            int flag=0;
+            for(int j=0;j<ll-1;j++) {
+                if(ch[j]==ch[ll-1]) {
+                    flag=1;
+                    break;
+                }
+            }
+            for(int j=r;j<n;j++) {
+                if(ch[j]==ch[r-1]) {
+                    flag=1;
+                    break;
+                }
+            }
+            if(flag) printf("YES\n");
+            else printf("NO\n");
+        }
+    }
+    return 0;
+}
+
+莫名其妙Re的代码：
+#include<iostream>
+#include<bits/stdc++.h>
+#include<cstdio>
+#include<cmath>
+#include<string>
+#include<algorithm>
+#include<cstring>
+
+#define MAXN 200010
+
+using namespace std;
+
+int main() {
+    int t;  
+    scanf("%d",&t);
+    while(t--) {
+        int n,q;
+        char ch[111];
+        scanf("%d%d",&n,&q);
+        //fflush(stdin);
+        scanf("%s",ch);
+        for(int i=1;i<=q;i++) {
+            int le,r;
+            scanf("%d%d",&le,&r);
+            int flag=0;
+            for(int j=0;j<le-1;j++) {
+                if(ch[j]==ch[le-1]) {
+                    flag=1;
+                    break;
+                }
+            }
+            for(int j=r;j<n;j++) {
+                if(ch[j]==ch[r-1]) {
+                    flag=1;
+                    break;
+                }
+            }
+            if(flag) printf("YES\n");
+            else printf("NO\n");
+        }
+    }
+    return 0;
+}
+//淦噢我一时竟然不知道该问fflush到底怎么用还是一个地方的bug两次报的错不一样？？
+//好叭以后还是老老实实getchar()
+
+T3 ： https://codeforces.com/problemset/problem/1451/C
+题意：给出a串和b串，将b串视为标准串，对a串做以下两种操作，判断若干次后是否可以将a串变为b串：
+	  1.如果a串有连续k个字符相同，可以把这k个字符的ASCII码值加一变为另一个字符
+	  注：k是输入的常数，只可以+1，并且不能循环，也就是'z'+1不是'a'
+	  2.交换任意相邻的两个字符
+思路：下面是给的一组测试数据，第一个数字是字符串长度第二个字符是k的值
+3 3	  很误导我啊真的是这个数据，这个题也真的要好好想的┭┮﹏┭┮
+abc   看完第一组：噢好像啥也没看出来，是要把两组相同的字符放在相同索引的位置吗？然后判断不一样的可不可以继续操作，但是没法放啊
+bcd				 
+4 2
+abba
+azza
+2 1
+zz
+aa
+6 2
+aaabba
+ddddcc
+	  
 
