@@ -1050,17 +1050,65 @@ T3 ： https://codeforces.com/problemset/problem/1451/C
 3 3	  很误导我啊真的是这个数据，这个题也真的要好好想的┭┮﹏┭┮
 abc   看完第一组：噢好像啥也没看出来，是要把两组相同的字符放在相同索引的位置吗？然后判断不一样的可不可以继续操作，但是没法放啊
 bcd				 
-4 2
-abba
+4 2	//然后就看第二组哈
+abba	//第一反应：啊排序，两个字符串一样的会对应起来然后比较不一样的是不是有连续k个能不能换就好啦
 azza
 2 1
-zz
+zz	
 aa
 6 2
-aaabba
-ddddcc
+aaabba		//完全不对嘤嘤嘤这个可以是把a放在了一起然后a和d对应了一下，b和c对应了一下，分别加上几。那所以就是把数目一样的放在一起！
+ddddcc		//所以给了一个思路是计算每一个字母的数目然后把一样的对应起来看能不能换，然后可能有剩下的，就继续看能换吗（诶试试呗）
+那就更麻烦了，因为存在就是好几个字母一样，一个能换可能会导致另一个换不掉（吗），复杂度有点高？
+//我的智障思路写出来的奇怪代码，没法往下写根本，因为不知道这样一直找一样的啥时候能结束啊
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+#include <cmath>
+#include<bits/stdc++.h>
 
+#define ll long long
+#define MAXN 1e5+7
 
+int main() {
+	int t;
+	scanf("%d",&t);
+	while(t--) {
+		int n,k;
+		scanf("%d%d",&n,&k);
+		getchar();
+		int a[30]={0},b[30]={0};
+		for(int i=1;i<=n;i++) {
+			int ch=getchar();
+			a[ch-'a'+1]++;
+		}
+		getchar();
+		for(int i=1;i<=n;i++) {
+			int ch=getchar();
+			b[ch-'a'+1]++;
+		}
+		int flag=0;
+		for(int i=1;i<=26;i++) {
+			if(a[i]<=b[i]&&a[i]) {     //相同的字母，b串比较多，说明必须有a串别的若干个相连的字母换过来但是不能减只能加
+				printf("No\n");
+				flag=1;
+				break;
+			}
+			if(a[i]>=b[i]&&b[i]) {   //相同的字母，a串比b串多，说明a串所有的字符都必须转换为其他字母
+				a[i]-=b[i];
+				b[i]=0;
+				if(a[i]%k!=0) {      //必须连续k个相同的字符才能转换，如果不能
+					flag=1;
+					printf("No\n");
+					break;
+				}
+			}
+			//b串里没有这样的字母那就找个数一样的（啊啊啊啊为啥跟刚刚说好的不一样） 
+			//我觉得也许应该重新起一个循环？
+			for(int i=1;i<=26;i++) {
+				if(a[i]) {    //如果还有没变完的，就要找个数一样的（如果没有咋办）
+//写到这发现好像写不下去了，因为找完一样的还可能有剩下的，就算是找大于等于的，减完还可能有剩下的，就一片混乱
+//还是专注一下这个AC代码
 #include<iostream>
 #include<bits/stdc++.h>
 #include<cstdio>
@@ -1088,28 +1136,28 @@ int main() {
         for(int i=1;i<=n;i++) {
             b_num[getchar()-'a'+1]++;
         }
-        getchar();
+        getchar();					//这一部分依旧是统计了各个字母的数量
         int flag=0;
-        for(int i=1;i<=26;i++) {
-            if(a_num[i]<b_num[i]) {
-                printf("No\n");
-                flag=1;
+        for(int i=1;i<=26;i++) {				//这个的思路是一个一个挨着换，我最后统计个数就相当于是把相同的字母放在了一起，而且排了序
+            if(a_num[i]<b_num[i]) {				//如果我一样的字母目的串比较多，a串就不可能变出这么多这个字母
+                printf("No\n");					//所以我最后一定变不出来目的串
+                flag=1;							//（这部分我的智障代码也有）
                 break;
             }
-            if(a_num[i]==b_num[i]) continue;
-            if(a_num[i]>b_num[i]) {
-                if(i==26) {
-                    printf("No\n");
+            if(a_num[i]==b_num[i]) continue;		//如果我同一个字母恰好两个串个数一样，那就不需要做变化了嘛，直接下一个
+            if(a_num[i]>b_num[i]) {					//如果我a串这个字母比较多，那我多的字母肯定是要填给其他不够的字母，那我怎么找这个要填的呢
+                if(i==26) {							//特判，如果恰好推到最后一个多了，那就说明肯定有一个配不成（但是我咋觉得这种情况不会出现呢）
+                    printf("No\n");					//我一直往后推最后前面的都一样了（划掉），会出现的会出现的
                     flag=1;
                     break;
                 }
-                int dis=a_num[i]-b_num[i];
-                if(dis%k!=0) {
-                    printf("No\n");
+                int dis=a_num[i]-b_num[i];			//干脆就没有找，直接推给了下一个，如果下一个还要多，就相当于是填给了下下一个，反正最后肯定能找到需要的那个
+                if(dis%k!=0) {						//如果我多的个数不是k的倍数，那最终填的话总有剩的这个字母，所以肯定也变不成一样的
+                    printf("No\n");					//（这一part我的智障代码居然也有）
                     flag=1;
                     break;
                 }
-                a_num[i+1]+=dis;
+                a_num[i+1]+=dis;					//直接推给下一个
             }
         }
         if(!flag) printf("Yes\n");
