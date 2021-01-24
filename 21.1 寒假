@@ -1250,8 +1250,191 @@ int main() {
 T2 ： https://codeforces.com/problemset/problem/1452/B
 题意：若干个箱子里面放有小方块，希望任选一个箱子把里面的小方块往其他箱子移动，怎么移动不用管，但是希望做到最后可以每个箱子里的小方块一样多。初始状态不一定是满足这个条件的，需要添加
 	  小方块（怎么添加也不用管）达成这样的条件，问最少要添多少个
-思路：
+思路：啊那就来叨逼叨比我的心路历程
+	  Round 1 
+	  极端情况就是用选到最小的把全部都凑成最大的，那凑完之后的总数就是（n-1)*max，只需要算这个值和sum的差。然后对着样例试了试，发现有可能最小的凑过去（n-1)*max比sum要小。
+	  ┭┮﹏┭┮5
+	  Round 2
+	  然后对着样例算如果出现了这种情况该怎么办，不知道为啥但是凑出来发现是sum-(n-1)*max，诶那就直接算绝对值。不会造数据就只好仿造了几个差不多的然后‘居然算下是对的？！然后就加了abs，
+	  毫不惊讶，wa掉了。
+	  ┭┮﹏┭┮
+	  Round 3
+	  开动我的小脑筋了，假如，我就只考虑极端情况，我挑中了最小的，然后要把最小的箱子里的小方块摊到其他的里面去，摊法很多，往哪个加都可以，好叭好像加法不一样得到的结果会有点不一样叭，
+	  但是我不知道(●ˇ∀ˇ●)，所以瞎猜让每个数分1轮着来，啊然后找出最大值算（n-1）*max'，计算差值。啊一听就很扯啊哈哈哈哈毫不意外的wa掉了
+	  ┭┮﹏┭┮
+	  Round 4
+	  然后就开始借鉴大佬的思路啦，（n-1）*max既然小，那一定是max出了问题，那就把max加上直到大了为止。说好的是会t为啥我一交就wa了呜呜呜
+	  ┭┮﹏┭┮
+	  Round 5
+	  然后用了二分，对max的值从最大值开始二分分到合适。
+	  终于该对了吧！！！
+#include<iostream>
+#include<bits/stdc++.h>
+#include<cstdio>
+#include<cmath>
+#include<string>
+#include<algorithm>
+#include<cstring>
 
+#define MAXN 200007
+#define ll long long
+
+using namespace std;
+
+int main() {
+    int t;
+    scanf("%d",&t);
+    while(t--) {
+        ll a[MAXN]={0};
+        int n;
+        scanf("%d",&n);
+        ll sum=0;
+        ll maxx=-1;
+        for(int i=1;i<=n;i++) {
+            scanf("%lld",&a[i]);
+            sum+=a[i];
+            maxx=max(maxx,a[i]);
+        }
+        ll l=maxx,r=2e9;
+        while(l<r) {
+            ll mid =(l+r)>>1;
+            if((mid*(n-1)>=sum)) r=mid;
+            else l=mid+1;
+        }
+        printf("%lld\n",(n-1)*l-sum);
+    }
+    return 0;
+}
+//啊Tag没打二分交了八百遍都不对，诶也许binary search是二分的意思？
+//我是five实锤
+
+T3：https://codeforces.com/contest/1452/problem/C
+题意：[和]匹配，（和）匹配，没啥好说的
+思路：这题我会！！！先进先出！！！维护一个队列！！！
+#include<iostream>
+#include<bits/stdc++.h>
+#include<cstdio>
+#include<math.h>
+#include<string>
+#include<algorithm>
+#include<cstring>
+#define MAXN 200007
+#define ll long long
+
+using namespace std;
+
+int main() {
+    int t;
+    scanf("%d",&t);
+    getchar();
+    while(t--) {
+        char s[MAXN];
+        scanf("%s",s);
+        int tail1=0,head1=0;      //head指向了开头的前一个位置，tail指向末尾位置
+        int tail2=0,head2=0;
+        int ans=0;
+        int len=strlen(s);
+        for(int i=0;i<len;i++) {
+            char ch=s[i];
+            if(head1<tail1&&ch==')') {
+                head1++;                  //好抽象的队列，数组都没用嘻嘻嘻夸夸我自己
+                ans++;
+            }
+            if(ch=='(') tail1++;
+            if(head2<tail2&&ch==']') {
+                head2++;
+                ans++;
+            }
+            if(ch=='[') tail2++;
+        }
+        printf("%d\n",ans);
+    }
+    return 0;
+}
+//既然做的非常顺畅就没啥好说的
+//完了然后后面的三道题我都没做过
+T4：https://codeforces.com/problemset/problem/1452/D
+T5：https://codeforces.com/problemset/problem/1452/E
+T6：https://codeforces.com/problemset/problem/1452/F
+
+Day 6
+
+T1：https://codeforces.com/problemset/problem/1447/A
+题意：n个包裹里第i个包裹装了i颗糖，对这些包裹进行m步操作，第j步选择任意一个包裹，将除了选中的包裹之外的其他包裹里的糖果+j，使最终所有包裹里的糖果数目相等.
+	  要求输出操作的步数和每步操作选中的包裹序号。
+思路：稍微想了一下还是。看起来好像很复杂，但其实“将除了选中包裹之外的其他包裹里的糖果数目+j”和将选中包裹中的糖果数目减j的效果其实是一样的。所以第j步选中第j+1个包裹，将这个包裹里的糖果
+	  数目-j，最后就会得到全部都是1的包裹。
+#include<iostream>
+#include<bits/stdc++.h>
+#include<cstdio>
+#include<cmath>
+#include<algorithm>
+
+using namespace std;
+
+int main() {
+    int t;
+    scanf("%d",&t);
+    while(t--) {
+        int n;
+        scanf("%d",&n);
+        printf("%d\n",n-1);
+        printf("2 ");
+        for(int i=3;i<=n;i++) {
+            printf(" %d",i);
+        }
+        printf("\n");
+    }
+    return 0;
+}
+
+T2：https://codeforces.com/problemset/problem/1447/B
+题意：一个n行m列的数字矩阵，里面有正数有负数，对这个矩阵可以进行两种操作：交换相邻两个数字的位置，将相邻的两个数字同时乘-1.在若干次操作后，所以数字的和最大可以是多少？
+思路：既然可以相互交换，那么数字的位置就无所谓了，只需要考虑值和个数。相邻的两个数字同时×-1，说明相邻的两个负数可以变为正数，既然要最后的和尽量大，那所有一对一对的负数就得变过来，正数
+	  不需要操作。所以只需要判断负数的个数，如果是偶数就说明可以全部凑到一起一个一个变成正数，然后对所有数字求和；如果是奇数，就把偶数个的负数变正，然后剩下的那个负数要在所有的数里
+	  绝对值最小
+#include<iostream>
+#include<bits/stdc++.h>
+#include<cstdio>
+#include<cmath>
+#include<string>
+#include<algorithm>
+#include<cstring>
+
+#define MAXN 200007
+#define ll long long
+
+using namespace std;
+
+int main() {
+    int t;
+    scanf("%d",&t);
+    while(t--) {
+        int n,m;
+        scanf("%d%d",&n,&m);
+        int sum=0;
+        int neg=0;
+        int minn=999;
+        for(int i=1;i<=n;i++) {
+            for(int j=1;j<=m;j++) {
+                int num;
+                scanf("%d",&num);
+                if(num<=0) neg++;
+                sum+=abs(num);
+                minn=min(minn,abs(num));
+            }
+        }
+        if(neg&1) printf("%d\n",sum-2*minn);
+        else printf("%d\n",sum);
+    }
+    return 0;
+}
+//今日份的不想学习先告一段落叭qwq
+T3：https://codeforces.com/problemset/problem/1447/C
+T4：https://codeforces.com/problemset/problem/1447/D
+后面两题没做，之后补题
+T5：https://codeforces.com/problemset/problem/1447/E
+T6：https://codeforces.com/problemset/problem/1447/F
 
 
 
