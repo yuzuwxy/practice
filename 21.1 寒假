@@ -1430,14 +1430,331 @@ int main() {
     return 0;
 }
 //今日份的不想学习先告一段落叭qwq
+//早睡早起身体好
+
 T3：https://codeforces.com/problemset/problem/1447/C
+题意：背包的最大承重量是W，将n件物品中的几件装入背包中，给出n件物品分别的重量，要求装入的物品总重W/2<=w<=W,如果可以达成这个条件，输出装入物品的总数和序号，否则输出“-1”
+思路：啊肯定是要排序的嘛。然后就加，如果加到一半发现过了W/2，那条件就满足了；如果加到一半不够W/2，但是再加下一个就超了W，那一个一个加就不能满足条件，但是可以判断会不会有一个物品的重
+	  量在范围内，那就只放一个就可以满足；还有可能全部加上都满足不了条件。
+//交了八百遍过不了的题，我再试最后一把
+//第一版代码
+#include<iostream>
+#include<algorithm>
+#include<iomanip>
+#include<set>
+#include<queue>
+#include<stack>
+#include<vector>
+#include<map>
+#include<cstring>
+#include<string>
+#include<cmath>
+#include<cstdio>
+
+#define MAXN (int)2e5+7
+#define ll long long
+
+using namespace std;
+
+struct Node {
+	ll wei;
+	ll num;
+}items[MAXN];
+
+bool cmp(Node a,Node b) {
+	if(a.wei==b.wei) return a.num<b.num;
+	return a.wei<b.wei;
+}
+
+int main() {   
+	int t;
+	scanf("%d",&t);
+	while(t--) {
+		ll n,w;
+		ll sum=0;
+		scanf("%lld%lld",&n,&w);
+		for(int i=1;i<=n;i++) {
+			scanf("%lld",&items[i].wei);
+			items[i].num=i;
+		}
+		sort(items+1,items+n+1,cmp);
+		if(items[1].wei>w) {
+			printf("-1\n");
+			continue;
+		}
+		int i;
+		ll temp=0;
+		for(i=1;i<=n;i++) {
+			if(sum<w/2) {
+				sum+=items[i].wei;
+				temp++;
+			}
+		}
+		if(temp==n&&sum<(w/2)) {
+			printf("-1\n");
+			continue;
+		}
+		if(sum<=w&&sum>=w/2) {
+			printf("%lld\n",temp);
+			printf("%lld",items[1].num);
+			for(int i=2;i<=temp;i++) {
+				printf(" %lld",items[i].num);
+			}
+			printf("\n");
+		}
+		else {
+			printf("1\n");
+			for(int i=1;i<=n;i++) 
+				if(items[i].wei>=w/2&&items[i].wei<=w) {
+					printf("%lld\n",items[i].num);
+					break;
+				}
+		}
+	}
+	return 0;
+}	
+居然第二个点就WA了！！！！！！！！
+不懂为啥会wa，明明没啥毛病呜呜呜
+//造出来数据改了一点居然还WA在第二个点！！！啊啊啊啊气死我了
+//发现w/2在w是奇数和偶数的时候存在一点歧义
+#include<iostream>
+#include<algorithm>
+#include<iomanip>
+#include<set>
+#include<queue>
+#include<stack>
+#include<vector>
+#include<map>
+#include<cstring>
+#include<string>
+#include<cmath>
+#include<cstdio>
+
+#define MAXN (int)2e5+7
+#define ll long long
+
+using namespace std;
+
+struct Node {
+	ll wei;
+	ll num;
+}items[MAXN];
+
+bool cmp(Node a,Node b) {
+	if(a.wei==b.wei) return a.num<b.num;
+	return a.wei<b.wei;
+}
+
+int main() {   
+	int t;
+	scanf("%d",&t);
+	while(t--) {
+		ll n,w;
+		ll sum=0;
+		scanf("%lld%lld",&n,&w);
+		for(int i=1;i<=n;i++) {
+			scanf("%lld",&items[i].wei);
+			items[i].num=i;
+		}
+		sort(items+1,items+n+1,cmp);
+		if(items[1].wei>w) {
+			printf("-1\n");
+			continue;
+		}
+		int i;
+		ll temp=0;
+		ll half=((w%2==0)?(w/2):((w+1)/2));    //奇数的话会有小数点<=比较好，但是偶数<就可以
+		for(i=1;i<=n;i++) {
+			if(sum<half) {
+				sum+=items[i].wei;
+				temp++;
+			}
+		}
+		if(temp==n&&sum<half) {
+			printf("-1\n");
+			continue;
+		}
+		if(sum<=w&&sum>=half) {
+			printf("%lld\n",temp);
+			printf("%lld",items[1].num);
+			for(int i=2;i<=temp;i++) {
+				printf(" %lld",items[i].num);
+			}
+			printf("\n");
+		}
+		else {
+			printf("1\n");
+			for(int i=1;i<=n;i++) 
+				if(items[i].wei>=half&&items[i].wei<=w) {
+					printf("%lld\n",items[i].num);
+					break;
+				}
+		}
+	}
+	return 0;
+}
+//道理我都懂但是为啥会wa啊啊啊啊啊啊啊啊啊
+//大佬的AC代码#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+
+int t;
+ll n,W;
+ll w[200007];
+struct node{
+	ll id;
+	ll w;
+}ww[200007];
+
+bool cmp(node x,node y)
+{
+	return x.w < y.w;
+}
+
+bool cmp1(node x,node y)
+{
+	return x.id < y.id;
+}
+
+int main()
+{
+	scanf("%d",&t);
+	while(t--)
+	{
+		ll sum = 0;
+		scanf("%lld%lld",&n,&W);
+		ll half = W / 2;
+		if(W % 2 != 0) half++;
+		ll flag = 0;
+		ll minn = 1000000007;
+		ll psb = 0;
+		for(int i=1;i<=n;i++)
+		{
+			scanf("%lld",&w[i]);
+			minn = min(minn, w[i]);
+			if(w[i] >= half && w[i] <= W) psb = i;
+			sum += w[i];
+		}
+		if(minn > W)
+		{
+			printf("-1\n");
+			continue;
+		}
+		if(psb > 0)
+		{
+			printf("1\n%lld\n",psb);
+			continue;
+		}
+		if(sum >= half && sum <= W)
+		{
+			printf("%lld\n",n);
+			for(int i=1;i<=n;i++) printf("%d ",i);
+			printf("\n");
+		}
+		else if(sum < half) printf("-1\n");
+		else
+		{
+			for(int i=1;i<=n;i++)
+			{
+				ww[i].id = i;
+				ww[i].w = w[i];
+			}
+			sort(ww + 1, ww + 1 + n, cmp);
+			ll cnt = 0;
+			ll tmp = 0;
+			while(tmp < half)
+				tmp += ww[++cnt].w;
+			if(tmp > W)
+			{
+				printf("-1\n");
+			}
+			else
+			{
+				sort(ww + 1, ww + 1 + cnt, cmp1);
+				printf("%lld\n",cnt);
+				for(int i=1;i<=cnt;i++)
+					printf("%lld ",ww[i].id);
+				printf("\n");
+			}
+		}
+	}
+	return 0;
+}
+//明明跟我的区别也不大啊就是位置换了下为啥啊呜呜呜
 T4：https://codeforces.com/problemset/problem/1447/D
+题意：对于两个字符串A和B，C和D分别是他们的子串，定义一种运算S(C,D)=LCS(C,D)-|C|-|D|，LCS是最长公共子序列，求给出的字符串A，B可以得到的最大的S
+	  注：子串是在原串中连续的一段，子序列可以不连续
+思路：啊好显然的DP啊，一看就是我不咋会的题目.
+#include<iostream>
+#include<bits/stdc++.h>
+#include<cstdio>
+#include<cmath>
+#include<string>
+#include<algorithm>
+#include<cstring>
+
+#define ll long long
+#define MAXN 5007
+
+using namespace std;
+
+char a[MAXN];
+char b[MAXN];
+int f[MAXN][MAXN]={0};
+
+int main() {
+    int n,m;
+    scanf("%d%d",&n,&m);
+    scanf("%s",a+1);
+    scanf("%s",b+1);
+    int ans=0;   
+    for(int i=1;i<=n;i++) {
+        for(int j=1;j<=m;j++) {    //f[i][j]存放的是A串以第i个字符结尾，B串以第j个字符结尾时的S值
+            if(a[i]==b[j])        //如果这个字符是一样的，那加上这个字符子串长度+1，子序列长度+1，S+2
+                f[i][j]=max(f[i][j],f[i-1][j-1]+2);    //比较加和在这停哪个大
+            else 
+                f[i][j]=max(f[i][j],max(f[i-1][j]-1,f[i][j-1]-1));        //如果不一样就要比较是谁往后走一个
+            ans=max(f[i][j],ans);    //比较到哪会得到最大的S值
+        }
+    }
+    printf("%d\n",ans);
+    return 0;
+}
+//好叭其实有点不懂为啥要和f[i][j]本身比，初始不都是0嘛qwq
 后面两题没做，之后补题
 T5：https://codeforces.com/problemset/problem/1447/E
 T6：https://codeforces.com/problemset/problem/1447/F
 
+Day 7
+T1：https://codeforces.com/problemset/problem/1389/A
+题意：给出一段区间的左右边界，要求找出本身在该范围内且最小公倍数也在该范围内的两个数。
+思路：同样是考虑极限情况，两个数最小公倍数最小时是其中一个数本身，较大数最小是较小数的两倍，较小数最小是左边界。也就是说需要判断的是左边界的二倍是否处于该区间内。
+#include<iostream>
+#include<bits/stdc++.h>
+#include<cstdio>
+#include<cmath>
+#include<algorithm>
+#define ll long long
 
+using namespace std;
 
+int main() {
+    int t;
+    scanf("%d",&t);
+    while(t--) {
+        ll le,ri;
+        scanf("%lld%lld",&le,&ri);
+        if((le<<1)>ri) printf("-1 -1\n");
+        else printf("%lld %lld\n",le,le<<1);
+    }
+    return 0;
+}
+
+T2： https://codeforces.com/problemset/problem/1389/B
+题意：给出长度为n的数字序列，初始i=1，每一步操作可以选择向右走或者向左走（如果可以的话），且不能连续向左走；每一步操作i变化1，value值加上走到的i对应的数组值。k步之后最多可以拿到多少
+	  value。给出可以走的步数和最多可以向左走的步数（可以向左走小于这个数的任意步）。
+思路：会想不会写就是我了。如果选择要向左走，那一定是选择相邻两个和最大反复横跳，同时要考虑在这两个反复横跳和往后走哪个更值得。算是伪dp叭
+//尝试自己再撸一遍代码
 
 
 
