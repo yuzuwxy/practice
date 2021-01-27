@@ -1755,9 +1755,56 @@ T2： https://codeforces.com/problemset/problem/1389/B
 	  value。给出可以走的步数和最多可以向左走的步数（可以向左走小于这个数的任意步）。
 思路：会想不会写就是我了。如果选择要向左走，那一定是选择相邻两个和最大反复横跳，同时要考虑在这两个反复横跳和往后走哪个更值得。算是伪dp叭
 //尝试自己再撸一遍代码
+//不太算是自己撸的把原来代码放过来辽毕竟有注释()
+#include<iostream>
+#include<bits/stdc++.h>
+#include<cstdio>
+#include<cmath>
+#include<string>
+#include<algorithm>
+#include<cstring>
 
+#define MAXN 100007
+#define ll long long
 
+using namespace std;
 
+int main() {
+    int t;
+    scanf("%d",&t);
+    while(t--) {
+        int n,k,z;
+        scanf("%d%d%d",&n,&k,&z);
+        int arr[MAXN]={0};
+        for(int i=1;i<=n;i++) {
+            scanf("%d",&arr[i]);
+        }
+        int sum=0;
+        int maxx=0;
+        int ans=0;
+        k++;    //因为k是步数，加一才是最终可以到达的下标
+        for(int i=1;i<=k;i++) {        //最多可以到达第k+1个数，循环上限用k不用n
+            sum+=arr[i];
+            if(i<n) maxx=max(maxx,arr[i]+arr[i+1]);
+            ans=max(ans,min((k-i)/2,z)*maxx+sum);    //k加了1，i（现在走的第几步）也加了1
+        }
+        printf("%d\n",ans);
+    }
+    return 0;
+}
+
+T3：https://codeforces.com/problemset/problem/1389/C
+T4：https://codeforces.com/problemset/problem/1389/D
+T5: https://codeforces.com/problemset/problem/1389/E
+震惊后面三道题居然都没做
+
+Day8
+T1:https://codeforces.com/problemset/problem/1392/A
+T2:https://codeforces.com/problemset/problem/1392/B
+T3:https://codeforces.com/problemset/problem/1392/C
+T4:https://codeforces.com/problemset/problem/1392/D
+T5:https://codeforces.com/problemset/problem/1392/E
+T6:https://codeforces.com/problemset/problem/1392/F
 
 
 
