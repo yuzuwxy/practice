@@ -1800,11 +1800,175 @@ T5: https://codeforces.com/problemset/problem/1389/E
 
 Day8
 T1:https://codeforces.com/problemset/problem/1392/A
+题意：长度为n的数字序列，可以任意选中两个数字用之和替代，最终要使序列中的全部都一样，输出最后相同数字的个数。
+思路：忘了。
+	  噢记起来了，因为题目要的是最少个数，可以这么想，从最大的数字开始，一直跟旁边的某个数字合并，就不可能遇到相同的值，最后一定会合成一个数。除非所有的数字都相等。
+#include<iostream>
+#include<bits/stdc++.h>
+#include<cstdio>
+#include<cmath>
+#include<algorithm>
+#define ll long long
+#define MAXN 200007
+
+using namespace std;
+
+int main() {
+    int t;
+    scanf("%d",&t);
+    while(t--) {
+        int n;
+        scanf("%d",&n);
+        int flag=1;
+        int arr[MAXN]={0};
+        for(int i=1;i<=n;i++) {
+            scanf("%d",&arr[i]);
+            if(i!=1) {
+                if(arr[i]!=arr[i-1]) {
+                    flag=0;
+                }
+            }
+        }
+        if(flag==1) printf("%d\n",n);
+        else printf("1\n");
+    }
+    return 0;
+}
 T2:https://codeforces.com/problemset/problem/1392/B
+题意：对长度为n的数字序列进行这样的操作：找出目前数列的最大值记为d，将序列的每个数变为d-ai。给出操作次数，输出最终得到的数字序列。
+思路：仔细一想就知道最后数列会变成一样的。奇数次是一种偶数次是另一种
+#include<iostream>
+#include<bits/stdc++.h>
+#include<cstdio>
+#include<cmath>
+#include<string>
+#include<algorithm>
+#include<cstring>
+
+#define MAXN 200007
+#define ll long long
+
+using namespace std;
+
+int main() {
+    int t;
+    scanf("%d",&t);
+    while(t--) {
+        int n;
+        ll arr[MAXN]={0};
+        ll k;
+        scanf("%d%lld",&n,&k);
+        ll maxx1=-1e10,maxx2=-1e10;
+        for(int i=1;i<=n;i++) {
+            scanf("%lld",&arr[i]);
+            maxx1=max(maxx1,arr[i]);
+        }
+        //int arr1[MAXN]={0};
+        for(int i=1;i<=n;i++) {
+            arr[i]=maxx1-arr[i];
+            maxx2=max(arr[i],maxx2);
+        }
+        if(k&1) {
+            printf("%lld",arr[1]);
+            for(int i=2;i<=n;i++) {
+                printf(" %lld",arr[i]);
+            }
+        }
+        else {
+            printf("%lld",maxx2-arr[1]);
+            for(int i=2;i<=n;i++) {
+                printf(" %lld",maxx2-arr[i]);
+            }
+        }
+        printf("\n");
+    }
+    return 0;
+}
+//水水水题
 T3:https://codeforces.com/problemset/problem/1392/C
+题意：一串长度为n的数字序列，每次可以选中一段区间让这一段区间的每一个数字+1，最终使这段，数字序列非降，求最少操作次数。
+思路：非常容易多想噢搜索回溯什么的然后情况讨论不清楚
+	  如果遇到了当前值小于前一个值，ans加上之差。因为后面这一段不管多远不管截至到哪一定要至少加上这个值，中间有加了不够的说明中间还有当前值小于前一个值继续加上差值。
+#include<iostream>
+#include<bits/stdc++.h>
+#include<cstdio>
+#include<math.h>
+#include<string>
+#include<algorithm>
+#include<cstring>
+#define MAXN 200007
+#define ll long long
+
+using namespace std;
+
+int main() {
+    int t;
+    scanf("%d",&t);
+    while(t--) {
+        int n;
+        scanf("%d",&n);
+        ll arr[MAXN]={0};
+        ll ans=0;
+        for(int i=1;i<=n;i++) {
+            scanf("%lld",&arr[i]);
+            if(arr[i]<arr[i-1]) ans+=arr[i-1]-arr[i];
+        }
+        printf("%lld\n",ans);
+    }
+    return 0;
+}
+//看代码就会哇塞原来是这样(o゜▽゜)o☆
+
 T4:https://codeforces.com/problemset/problem/1392/D
 T5:https://codeforces.com/problemset/problem/1392/E
 T6:https://codeforces.com/problemset/problem/1392/F
+//啊哦后面三题没做。
+
+D9
+T1：https://codeforces.com/problemset/problem/1466/A
+题目：只看题目不知道是我英语不太好还是咋没看太懂，完全不知道是要干个啥，看完后面注释才明白，简练一下就是给出一串数字分别表示线段端点在x轴上的坐标，计算组成了多少个不同长度的线段。
+思路：数据真的非常非常小100 50 50，不能更暴力了
+#include<iostream>
+#include<bits/stdc++.h>
+#include<cstdio>
+#include<cmath>
+#include<algorithm>
+#define ll long long
+#define MAXN 200007
+
+using namespace std;
+
+int main() {
+    int t;
+    scanf("%d",&t);
+    while(t--) {
+        int n;
+        scanf("%d",&n);
+        int arr[100]={0};
+        int cha[100]={0};
+        for(int i=1;i<=n;i++) {
+            scanf("%d",&arr[i]);
+        }
+        for(int i=1;i<=n;i++) {
+            for(int j=1;j<=n;j++) {
+                cha[abs(arr[i]-arr[j])]++;
+            }
+        }
+        int ans=0;
+        for(int i=1;i<=50;i++) {
+            if(cha[i]) ans++;
+        }
+        printf("%d\n",ans);
+    }
+    return 0;
+}
+
+T2: https://codeforces.com/problemset/problem/1466/B
+题目：
+T3: https://codeforces.com/problemset/problem/1466/C
+T4: https://codeforces.com/problemset/problem/1466/D
+T5: https://codeforces.com/problemset/problem/1466/E
+T6: https://codeforces.com/problemset/problem/1466/F
 
 
 
