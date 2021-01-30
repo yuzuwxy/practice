@@ -1924,7 +1924,7 @@ T5:https://codeforces.com/problemset/problem/1392/E
 T6:https://codeforces.com/problemset/problem/1392/F
 //啊哦后面三题没做。
 
-D9
+Day9
 T1：https://codeforces.com/problemset/problem/1466/A
 题目：只看题目不知道是我英语不太好还是咋没看太懂，完全不知道是要干个啥，看完后面注释才明白，简练一下就是给出一串数字分别表示线段端点在x轴上的坐标，计算组成了多少个不同长度的线段。
 思路：数据真的非常非常小100 50 50，不能更暴力了
