@@ -1964,15 +1964,369 @@ int main() {
 }
 
 T2: https://codeforces.com/problemset/problem/1466/B
-题目：
+题目：可能又是一道没咋看懂题目的题？好像题目的意思是每个数只能加1次吧……然后判断这一串数字里不同数字的个数
+思路：就模拟叭，遍历然后计算出现的个数，如果大于1就可以给一个数+1，然后再把下一个数出现的次数+1.
+//勉强算一道水题叭
+#include<iostream>
+#include<bits/stdc++.h>
+#include<cstdio>
+#include<cmath>
+#include<string>
+#include<algorithm>
+#include<cstring>
+
+#define MAXN 200007
+#define ll long long
+
+using namespace std;
+
+int main() {
+    int t;
+    scanf("%d",&t);
+    while(t--) {
+        int n;
+        scanf("%d",&n);
+        int notes[MAXN]={0};
+        for(int i=1;i<=n;i++) {
+            int note;
+            scanf("%d",&note);
+            notes[note]++;
+        }
+        int ans=0;
+        for(int i=1;i<=2*n+1;i++) {
+            if(notes[i]) ans++;
+            if(notes[i]>1) notes[i+1]++;
+        }
+        printf("%d\n",ans);
+    }
+    return 0;
+}
 T3: https://codeforces.com/problemset/problem/1466/C
+题目：给出一串字符，其可能含有回文子串，求改动的最少字符数使这一串字符不出现回文子串。
+思路：
+//假公济私，纳博科夫《微暗的火》，唐建清《独抒己见》
+一个回文串关键的部分就是aba，或者aa这个样子的，改哪个不太能捋顺也不知道一不一样，所以跟了样例看，样例有一个bbbbbbb一共七个b，给的答案是4，分别用两种方法改了改，发现改前面那个很明显
+不太行，会一直遇到两个一样的然后改前面那个就改了个遍，改后面那个就好了，同理第一种情况也改了后面那个。
+//有大佬还考虑了aaa这样的情况，直接改掉后边两个，和先考虑aa再考虑aba是一样的。
+//上代码
+#include<iostream>
+#include<bits/stdc++.h>
+#include<cstdio>
+#include<math.h>
+#include<string>
+#include<algorithm>
+#include<cstring>
+#define MAXN 100007
+#define ll long long
+
+using namespace std;
+
+int main() {
+    int t;
+    scanf("%d",&t);
+    while(t--) {
+        char s[MAXN];
+        int f[MAXN]={0};
+        scanf("%s",s);
+        int len=strlen(s);
+        int ans=0;
+        for(int i=1;i<len;i++){
+            if(s[i]==s[i-1]&&f[i-1]==0) {
+                ans++;
+                f[i]=1;
+            }
+            if(i>=2&&s[i]==s[i-2]&&f[i-2]==0) {
+                ans++;
+                f[i]=1;
+            }
+        }
+        printf("%d\n",ans);
+    }
+    return 0;
+}
+//想的时候还挺顺当，没想到打出来居然在怎么标记有没有改过卡了好一会
+
 T4: https://codeforces.com/problemset/problem/1466/D
 T5: https://codeforces.com/problemset/problem/1466/E
 T6: https://codeforces.com/problemset/problem/1466/F
+//真是惭愧，又是我没做完的DEF
+//一定补一定补
 
+Day 10
+//后边的题难度直线上升，就不会呜呜呜
+//只做了两个题呜呜呜
+T1：https://codeforces.com/problemset/problem/1474/A
+题目：两串只含有0和1的数（包含前导0）a，b，不进位相加得到一串包含0，1，2的数（不含前导0），然后把得到结果连续相同的几个字符并成1个记位一个十进制数。给出a，求一个b使最后得到数字最大。
+思路：
+//又来谋私，纪德《人间食粮》好像听过
+啊肯定要遍历，尽量都能加到最大，而且不和前面那个一样，那就判断a[i]+1是否等于sum[i-1]
+之前的那个思路忘记了略麻烦，而且wa掉了
+#include<iostream>
+#include<bits/stdc++.h>
+#include<cstdio>
+#include<cmath>
+#include<algorithm>
+#define ll long long
+#define MAXN 100007
 
+using namespace std;
 
+int main() {
+    int t;
+    scanf("%d",&t);
+    while(t--) {
+        int n;
+        scanf("%d",&n);
+        int num[MAXN]={0};
+        getchar();
+        for(int i=1;i<=n;i++) {
+                num[i]=getchar()-'0';
+        }
+        int _num[MAXN]={0};
+        _num[1]=1;
+        printf("%d",_num[1]);    //第一位一定要最大
+        for(int i=2;i<=n;i++) {
+            int w=1+num[i];
+            if(w==num[i-1]+_num[i-1]) _num[i]=0;    //如果第i位的和（最大当然是+1)和前一位相同那就不需要再加了不然会消掉
+            else _num[i]=1;
+            printf("%d",_num[i]);
+        }
+        printf("\n");
+    }
+    return 0;
+}
+T2：https://codeforces.com/problemset/problem/1474/B
+题目：求一个整数它至少有4个因数，并且任意两个因数之间的差不小于d
+思路：看出来了，数学题呜呜呜。
+	  就写了好多好多数然后发现两个质数的乘积是一定满足的，所以就转化成了找质数
+	  //看了网上的题解一下就说是要是质数我也不知为啥qwq
+#include<bits/stdc++.h>
+#define LL long long
+using namespace std;
+bool prime(int digit)      //判断这个数是不是质数
+{
+	if(digit==2||digit==3) return true;
+	else if(digit<=1||digit%2==0) return false;
+	else{
+		for(int i=3;i*i<=digit;i+=2){
+			if(digit%i==0) return false;
+		}
+		return true;
+	}
+}
+int main()
+{
+	int t;
+	cin>>t;
+	while(t--){
+		int a,ans=1,f=0;
+		cin>>a;
+		for(int i=a+1;;i++){     //差是a，这个质数最小也要在a+1找起，因为一定有一个因数是1
+			if(prime(i)&&f==0){
+				ans*=i;
+				f++;
+			}								//如果找着了一个
+			if(prime(i)&&f==1&&i-ans>=a){			//得去找找第二个
+				ans*=i;
+				f++;
+			}
+			if(f==2) break;
+		}
+		cout<<ans<<endl;
+	}
+	return 0;
+}
 
+T3: https://codeforces.com/problemset/problem/1474/C
+T4: https://codeforces.com/problemset/problem/1474/D
+T3: https://codeforces.com/problemset/problem/1474/A
+//惭愧又没做会
+
+Day11
+//我今天可出息了做了三道题
+T1:https://codeforces.com/problemset/problem/872/A
+题目：给出两组长度为n的数字序列（1~9），在两个数组中分别任意取一个数字可以组成一个两位数（顺序任意），如果这两个数字一样就只取一个成为一位数。找出可以组成的最小数。
+思路：肯定是一位数更小所以算每个数字出现的次数如果两次就直接输出这个数（最小的），没有一样的就把两个数组排序然后选最小的两个。
+//？？？代码看的我一头雾水
+#include<iostream>
+#include<bits/stdc++.h>
+#include<cstdio>
+#include<cmath>
+#include<algorithm>
+#define ll long long
+#define MAXN 100007
+
+using namespace std;
+
+int main() {
+    int n,m;
+    scanf("%d%d",&n,&m);
+    int a[15]={0};
+    int b[15]={0};
+    for(int i=1;i<=n;i++) {
+        scanf("%d",&a[i]);
+    }
+    for(int i=1;i<=m;i++) {
+        scanf("%d",&b[i]);
+    }
+    sort(a+1,a+n+1);
+    sort(b+1,b+m+1);
+    for(int i=1;i<=n;i++) {
+        for(int j=1;j<=m;j++) {
+            if(a[i]==b[j]) {
+                printf("%d\n",a[i]);
+                return 0;
+            }
+        }
+    }        
+    printf("%d%d\n",min(a[1],b[1]),max(a[1],b[1]));
+    return 0;
+}
+//出了一点点小差错
+T2:https://codeforces.com/problemset/problem/872/B
+题目：有的数字可以被分成若干个合数的和。求这个数最多可以被分为多少个合数的和。
+思路：思维。最小的合数是4，那这个数尽量往大的分最理想就是全部分成4这样的话一定是最多的，但是有的数可能不是4的倍数，有余数就要考虑余数怎么办，4肯定是要保留，余数是1的话，就4+4+1=9是合数，
+	  那就得要求至少有3个4，5、9不行。以此类推余数是2，那就把4+2=6，这就要求至少要有两个4，一个四6是不行的；余数是3，那就把3拆成1和2，给3个4摊一摊，所以7、11不行。
+#include<iostream>
+#include<bits/stdc++.h>
+#include<cstdio>
+#include<cmath>
+#include<string>
+#include<algorithm>
+#include<cstring>
+
+#define MAXN 100007
+#define ll long long
+
+using namespace std;
+
+int main() {
+    int t;
+    scanf("%d",&t);
+    while(t--) {
+        ll n;
+        scanf("%lld",&n);
+        if(n==1||n==2||n==3||n==5||n==7||n==11) {   //特殊情况考虑
+            printf("-1\n");
+            continue;
+        }
+        if(n%4==0) printf("%lld\n",n/4);       //分类讨论
+        if(n%4==1) {
+            printf("%lld\n",n/4-1);
+        }
+        if(n%4==2) {
+            printf("%lld\n",n/4);
+        }
+        if(n%4==3) {
+            printf("%lld\n",n/4-1);
+        }
+    }
+    return 0;
+}
+
+T3:https://codeforces.com/problemset/problem/872/C
+题目：把一串数字序列分为k段非空序列，求每段子序列的最小值，找出可以得到的最大的最小值。
+思路：还是稍稍想一下，就很容易想到如果k=1，那就直接是全部的最小值；然后k很多的话，就可以直接把整个数列的最大值单独隔出来，那最小值的的最大值就是整个数列的最大值，不可能更大；但是特殊
+	  情况就是k=2的话，不一定可以把最大值单独隔离出来，想跑循环但是不会呜呜呜，仔细考虑一下，假设这个隔板放在了中间的某个地方，那就一定会有一半的最小值是整个数列的最小值，另一半的最
+	  小值就是最终答案的备用值，然后把隔板往这一边挪，整个数列的最小值不会变化，但是另一半的最小值肯定不会减小，如果比较靠中间的话，那我往这边挪就会把原来应该是最小值的这个数挪到另一半
+	  去，最次就是我这一半的最小值就在端点那就一直挪动挪到只剩一个数找到最终答案，反正最终肯定会挪到这个地步就是一半的最小值是整个数列的最小值，另一半的最小值是端点处的值。
+	  //我也不知道麻麻烦烦说了啥，还真的是有高三改错那味了，反正我自己捋顺了
+#include<iostream>
+#include<bits/stdc++.h>
+#include<cstdio>
+#include<math.h>
+#include<string>
+#include<algorithm>
+#include<cstring>
+#define MAXN 1000007
+#define ll long long
+
+using namespace std;
+
+int main() {
+    int n,k;
+    scanf("%d%d",&n,&k);
+    ll arr[MAXN]={0};
+    ll maxx=-0x7fffffff;
+    ll minn=0x7fffffff;
+    for(int i=1;i<=n;i++) {
+        scanf("%lld",&arr[i]);
+        maxx=max(maxx,arr[i]);
+        minn=min(minn,arr[i]);
+    }
+    if(k==1) printf("%lld\n",minn);
+    if(k>=3) printf("%lld\n",maxx);
+    if(k==2) printf("%lld\n",max(arr[1],arr[n]));
+    return 0;
+}
+
+T4:https://codeforces.com/problemset/problem/872/D
+T5:https://codeforces.com/problemset/problem/872/E
+//CF上的题真的是好重思维啊俩题没做
+
+Day 12
+//噢今天爸爸过生日鸽了一天晚上回家补题补的非常暴躁第二题交了八百遍没过然后第二天就投身于另外的题目了呜呜呜完了回来好好看
+T1：https://codeforces.com/problemset/problem/1362/A
+题目：给出两个数，问一个数能否通过×2，×4，×8，÷2，÷4，÷8得到另一个数，求出最小操作次数
+思路：水水水题
+#include<iostream>
+#include<bits/stdc++.h>
+#include<cstdio>
+#include<cmath>
+#include<algorithm>
+#define ll long long
+#define MAXN 100007
+
+using namespace std;
+
+int main() {
+    int t;
+    scanf("%d",&t);
+    while(t--) {
+        ll a,b;
+        scanf("%lld%lld",&a,&b);
+        if(a==b) {
+            printf("0\n");
+            continue;
+        }
+        ll _a=max(a,b);
+        ll _b=min(a,b);
+        if(_a%_b!=0) {
+            printf("-1\n");
+            continue;
+        }
+        ll c=_a/_b;
+        if(c%2!=0) {
+            printf("-1\n");
+            continue;
+        }
+        ll ans=0;
+        while(c%8==0) {
+            c>>=3;
+            ans++;
+        }
+        while(c%4==0) {
+            c>>=2;
+            ans++;
+        }
+        while(c%2==0) {
+            c>>=1;
+            ans++;
+        }
+        if(c==1)  printf("%lld\n",ans);
+        else printf("-1\n");
+    }
+    return 0;
+}
+T2: https://codeforces.com/problemset/problem/1362/B
+//交了八百遍不对淦不知道是错哪里了
+T3: https://codeforces.com/problemset/problem/1362/D
+T4: https://codeforces.com/problemset/problem/1362/E
+T5: https://codeforces.com/problemset/problem/1362/F
+
+Day 13
+T1:
+//不想写了睡一觉来
 
 
 
