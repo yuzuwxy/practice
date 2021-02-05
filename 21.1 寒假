@@ -2348,6 +2348,173 @@ T2：https://codeforces.com/problemset/problem/777/B
 	  点数一样的话不弹。
 思路：
 	
+Day 23 2.5
+//每天都当鸽子，有一点点烦
+T1：https://codeforces.com/problemset/problem/796/A
+题意：在形如坐标系的一条路上建房子，每个房子距离相等相当于一个坐标点，然后女神住在坐标为m的房子里，每两栋房子之间的距离是10，有的房子住了人就把value记为0，有的房子没有住人会给出value，
+	  给出可以建造的房子的value上限，求最近离女神多远。
+思路：第一题总是水。分别找前面和后面满足条件的。遍历
+#include<iostream>
+#include<cstdio>
+#include<bits/stdc++.h>
+
+#define MAXN (int)1e5+7
+#define ll long long
+
+using namespace std;
+
+int main() {
+    int n,m,k;
+    scanf("%d%d%d",&n,&m,&k);
+    int arr[MAXN]={0};
+    for(int i=1;i<=n;i++) {
+        scanf("%d",&arr[i]);
+    }
+    int dist=99999;
+    for(int i=1;i<m;i++) {
+        if(arr[i]<=k&&arr[i]) {
+            dist=min(dist,(m-i)*10);
+        }
+    }
+    for(int i=m+1;i<=n;i++) {
+        if(arr[i]<=k&&arr[i]) dist=min(dist,(i-m)*10);
+    }
+    printf("%d\n",dist);
+    return 0;
+}
+T2：https://codeforces.com/problemset/problem/796/B
+题意：还是转杯子。n个杯子排成一列，有些杯子下是洞，东西进去会直接掉下去。最开始把骨头放在第一个杯子里，然后输k组数，表示这两个杯子和杯子里的东西通过魔法换了位置，希望知道杯子里东西最
+	  后在第几个里面。
+思路：模拟
+#include<iostream>
+#include<cmath>
+#include<string>
+#include<algorithm>
+#include<cstring>
+#include<bits/stdc++.h>
+#include<cstdio>
+
+#define MAXN (ll)1e6+7
+#define ll long long
+
+using namespace std;
+
+int hole[MAXN]={0};
+
+int main() {
+    int n,m,k;
+    scanf("%d%d%d",&n,&m,&k);
+    for(int i=1;i<=m;i++) {
+        int x;
+        scanf("%d",&x);
+        hole[x]=1;
+    }
+    int pos=1;
+    for(int i=1;i<=k;i++) {
+        int a,b;
+        scanf("%d%d",&a,&b);
+        if(pos==a&&hole[pos]==0) {          //if(pos==a&&hole[a]==0)
+            pos=b;
+        }
+        else if(pos==b&&hole[pos]==0) {		//if(pos==b&&hole[b]==0)   	//之前wa掉了是这么写的。接下来换到的那个位置是不是洞无所谓，要判断的是骨头是不是已经掉在洞里了
+                pos=a;
+            
+        }
+    }
+    printf("%d\n",pos);
+    return 0;
+}
+
+T3：https://codeforces.com/problemset/problem/796/C
+题意：一直小狗想要黑银行的网，若干个银行是连在一起的，保证n个银行有n-1条边，图是连通图。先选择一个银行黑进去，接着沿边向其他的银行黑，每黑进一个银行，跟这个银行直接相连的银行代价+1，
+	  跟这个银行隔着一个银行相连的银行代价+1，要求能够黑掉所有银行的电脑能力值（就是可以支付得起每一个代价的初始值）。
+思路：就很显然肯定是跟最大值有关系，还有最大值-1，因为这个值有可能被加到最大值。每一个值最多会加两个1，只有跟开始的银行相连的点会只+1,那就要判断（刚开始选择的一定是初始的最大值）跟
+	  初始点相连的点是不是全部的maxx-1，还是有其他的maxx-1需要+2；或者最大值有很多个，最大值是不是全部与初始值连起来只+1，还是其他地方也有要+2。
+#include<iostream>
+#include<cmath>
+#include<string>
+#include<algorithm>
+#include<cstring>
+#include<bits/stdc++.h>
+#include<cstdio>
+#include<algorithm>
+#include<vector>
+
+#define MAXN (ll)1e6+7
+#define ll long long
+
+using namespace std;
+
+struct Node{
+    ll strengths;
+    int x;
+}bank[3*MAXN];
+vector<int> tu[3*MAXN];
+ll n,ma,x,y,ans1,ans2,l,k;
+ll a[3*MAXN],b[3*MAXN];
+
+using namespace std;
+
+int main() {
+	scanf("%lld",&n);
+	ma=-0x7fffffff;
+	for(int i=1;i<=n;i++) {
+		scanf("%lld",&bank[i].strengths);
+		ma=max(ma,bank[i].strengths);
+		bank[i].x=i;
+	}
+	for(int i=1;i<n;i++) {
+		scanf("%lld%lld",&x,&y);
+		tu[x].push_back(y);
+		tu[y].push_back(x);
+	}
+	for(int i=1;i<=n;i++) {
+		if(bank[i].strengths==ma) {
+			ans1++;
+			a[ans1]=bank[i].x;
+		}
+		if(bank[i].strengths==ma-1) {
+			ans2++;
+			b[ans2]=bank[i].x;
+		}
+	}
+	l=0;
+	if(ans1==1) {
+		for(ll i=0;i < tu[a[ans1]].size();i++) {
+			int k=tu[a[ans1]][i];
+			if(bank[k].strengths==ma-1) l++;
+		}
+		if(l==ans2) {
+			printf("%lld\n",ma);
+			return 0;
+		}
+		else {
+			printf("%lld\n",ma+1);
+			return 0;
+		}
+	}	
+	bool flag=false;
+	for(int i=1;i<=n;i++) {
+		l=0;
+		if(bank[i].strengths==ma) l++;
+		for(ll j=0;j < tu[bank[i].x].size();j++) {
+			int k=tu[i][j];
+			if(bank[k].strengths==ma) l++;
+		}
+		if(l==ans1) {
+			flag=true;
+			break;
+		}
+	}
+	if(flag) {
+		printf("%lld\n",ma+1);
+		return 0;
+	}
+	else printf("%lld\n",ma+2);
+	return 0;
+}
+T4：https://codeforces.com/problemset/problem/796/D
+T5：https://codeforces.com/problemset/problem/796/E
 
 
 
