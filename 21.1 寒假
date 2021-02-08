@@ -2516,7 +2516,94 @@ int main() {
 T4：https://codeforces.com/problemset/problem/796/D
 T5：https://codeforces.com/problemset/problem/796/E
 
+Day 25 2.8
+T1:https://codeforces.com/problemset/problem/1480/A
+题意：给一串字符，两个人依次把每一个字符改成自己想要的，必须改不能保持不变。第一个人想要字符串的字典序尽量小，第二个人想要字符串的字典序尽量大。求最后得到的字符串。
+思路：模拟挨个改过去就是了
+#include<iostream>
+#include<cstdio>
+#include<bits/stdc++.h>
 
+#define MAXN (int)1e5+7
+#define ll long long
+
+using namespace std;
+
+int main() {
+    int t;
+    scanf("%d",&t);
+    while(t--) {
+        char ch[55];
+        scanf("%s",ch);
+        int len=strlen(ch);
+        for(int i=0;i<len;i++) {
+            if(i%2==0) {
+                if(ch[i]!='a') ch[i]='a';
+                else ch[i]='b';
+            }
+            if(i%2==1) {
+                if(ch[i]!='z') ch[i]='z';
+                else ch[i]='y';
+            }
+        }
+        printf("%s\n",ch);
+    }
+    return 0;
+}
+
+T2:https://codeforces.com/problemset/problem/1480/B
+题意:勇士打小怪兽。给出勇士的攻击力和血量，再给一串小怪的攻击力，再给一串小怪的HP（一一对应），问勇士能不能打完这一串小怪（同归于尽也可）。
+思路：一开始想的是把全部的伤害算出来然后跟生命比较（诶？？为啥不行），样例就没过去。嗷就是有可能虽然总的比较大但是有可能是有一下可以同归于尽的，虽然勇士的hp一下成了负数但是怪兽的血也
+	  掉完了。啊那就应该顺着继续往下想呀！我不知道拐到哪里去了！
+	  算掉全部的然后比较如果直接就小于勇士的hp那很好全都干掉。如果大于勇士的hp有可能是最后一击跟怪兽同归于尽了，所以就算如果不带最后一击那勇士的生命值是正是负。如果是负就说明前面还有
+	  几下会把勇士的血打掉，如果是正的那就说明勇士是同归于尽了。最难搞的当然留在最后，所以最后是要跟攻击最大的同归于尽，
+//趁过年没事好好学习！！！！
+//到底是自己写的AC代码呜呜呜为啥我这么菜
+#include<iostream>
+#include<cmath>
+#include<string>
+#include<algorithm>
+#include<cstring>
+#include<bits/stdc++.h>
+#include<cstdio>
+
+#define MAXN (ll)1e6+7
+#define ll long long
+
+using namespace std;
+
+ll a[MAXN],b[MAXN];
+
+int main() {
+    int t;
+    scanf("%d",&t);
+    while(t--) {
+        ll A,B,n;
+        scanf("%lld%lld%lld",&A,&B,&n);
+        ll maxx=-1;
+        for(int i=1;i<=n;i++) {
+            scanf("%lld",&a[i]);
+            maxx=max(maxx,a[i]);
+        }
+        ll sum=0;
+        for(int i=1;i<=n;i++) {
+            scanf("%lld",&b[i]);
+            sum+=ceil((double)b[i]/A)*a[i];    //这种地方还是要搞输出测试一下
+        }
+        if(sum<=B) printf("YES\n");
+        else {
+            if(B-sum+maxx>0) printf("YES\n");
+            else printf("NO\n");
+        }
+    }
+    return 0;
+}
+
+T3:https://codeforces.com/problemset/problem/1480/C
+//这是个交互题！！！
+//睡起来看交互题把之前的都做掉
+T4:https://codeforces.com/problemset/problem/1480/D
+T5:https://codeforces.com/problemset/problem/1480/E
 
 
 
