@@ -1216,6 +1216,99 @@ int main() {   //A是先手
 
 T5 ： https://codeforces.com/problemset/problem/1451/E1
 //交互题
+遭遇滑铁卢
+题目的意思大概是一个数字序列长度为n(保证是2的幂次),可以根据数组索引对任意两个数的AND，OR，XOR进行询问，询问次数不超过n+2,求的是这个数字序列。
+//英语不好交互题的题目死难看
+沙雕思路：一个数跟0按位或得到的还是这个数，所以让第一个数是0，然后依次问每个数跟这个数的或，只需要问n-1次。好憨啊主要是没啥思路。
+#include<bits/stdc++.h>
+
+using namespace std;
+
+#define ll long long
+
+int main() {
+    ll n;
+    scanf("%lld",&n);
+    vector<ll> arr(n+1);
+    arr[0]=0;
+    for(ll i=1;i<n;i++) {
+        printf("OR %lld 0\n",i);
+        fflush(stdout);
+        ll ans;
+        scanf("%lld",&ans);
+        arr[i]=ans;
+    }
+    printf("!");
+    for(ll i=0;i<n;i++) {
+        printf(" %lld",arr[i]);
+    }
+    printf("\n");
+    return 0;
+}
+大概就是不能自己定数组里的数吧，人家可能有唯一答案┭┮﹏┭┮
+翻了题解：
+设 x = a + b , y = a + c , z = b + c
+因为 a + b = ( a ⊕ b ) + 2 ∗ ( a & b )     //咱也不知道为啥先记着吧
+而 ( a ⊕ b ) ⊕ ( a ⊕ c ) = b ⊕ c，所以只需要知道 a & b , a & c , b & c , a ⊕ b , a ⊕ c 这五项就能算出x , y , z 三个数，进而推出 a , b , c  三个数，最后剩下的 n − 3个数，只要一次 ⊕ 就可以解决，因此总共查询的次数为 5 + n − 3 = n + 2次
+位运算真的是太优美了（划掉）
+淦啊好强，这谁能想到啊
+#include<bits/stdc++.h>
+
+using namespace std;
+
+#define ll long long
+
+int main() {
+    int n;
+    scanf("%d",&n);
+    vector<int> res(n+1,0);
+    int ab1,ab2,ac1,ac2,bc1,bc2;
+    int x,y,z;
+    printf("XOR 1 2\n");
+    fflush(stdout);
+    scanf("%d",&ab1);
+
+    printf("AND 1 2\n");    
+    fflush(stdout);
+    scanf("%d",&ab2);
+
+    printf("XOR 1 3\n");
+    fflush(stdout);
+    scanf("%d",&ac1);
+
+    printf("AND 1 3\n");
+    fflush(stdout);
+    scanf("%d",&ac2);
+
+    bc1=ab1^ac1;
+
+    printf("AND 2 3\n");
+    fflush(stdout);
+    scanf("%d",&bc2);
+
+    x=ab1+2*ab2;
+    y=ac1+2*ac2;
+    z=bc1+2*bc2;
+
+    res[1]=(x+y-z)/2;
+    res[2]=(x+z-y)/2;
+    res[3]=(y+z-x)/2;
+
+    int p;
+    for(int i=4;i<=n;i++) {
+        printf("XOR 1 %d\n",i);
+        fflush(stdout);
+        scanf("%d",&p);
+        res[i]=p^res[1];          //这里还有一个式子a^b^a=b
+    }
+    printf("!");
+    for(int i=1;i<=n;i++) {
+        printf(" %d",res[i]);
+    }
+    printf("\n");
+    fflush(stdout);
+    return 0;
+}
 
 T6 ： https://codeforces.com/problemset/problem/1451/E2
 //两道题一个是简单版一个是比较难的一版呜呜呜
