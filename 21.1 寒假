@@ -1312,6 +1312,134 @@ int main() {
 
 T6 ： https://codeforces.com/problemset/problem/1451/E2
 //两道题一个是简单版一个是比较难的一版呜呜呜
+//来了，更难得版本
+题意：简单版用了神奇但是我一点都不懂的位运算。困难版相对没有那么数学其实。
+      困难版和简单版的区别在于一个询问次数是n+2次一个是n+1次（都不会啊呜呜呜）。
+      这题一个需要注意的点是数字的个数跟数字的范围是一致的。
+      需要知道的重要的位运算相关的式子有a^b^a=b;a^a=0;if a^b==c^b ,a==c
+      很容易想到的一种情况是序列里的数字各不相同，可以数遍数字范围的所有数，但是这样的话要确定用简单版的办法需要n+2次。
+      //重点来了，我自己哪能想出来这么厉害的办法，看网上大佬题解会了的：
+      按位异或相同的位得到0不同的位得到1，那找到跟第一个数异或（当然是跟第一个数啦完全不会做也可以想到所有的数都要跟第一个数异或eemm参照最开始的沙雕想法）后为1的数，那这个数字跟第一个
+      数相差1，这个数跟第一个数按位并，就会得到两个数中的较小数（因为前面的数是一样的最后一个数不同得到0，一定是较小数），那如何确定第一个数是较小数还是较大数呢？
+      找到与第一个数按位异或之后结果为2的数，这个数跟第一个数只有转化为二进制后的倒数第二个数不同，最后一位数是相同的，那就让这个数再跟第一个数取并。
+      按位与的运算法则是均为1时结果才为1，所以按位与之后的结果可以确定第一个数的最后一位数。
+      两次并之后，确定了第一个数，然后再把后面的数的异或结果进行一次异或运算，就可以得到所有的数。
+//虽然看了大佬的思路但是自己写了代码，然后wa在了第32个点
+//发现最近越来越不爱改bug，一改bug就想干别的，可能是课设后遗症
+//第32个点wa而且不给我标为啥就离谱
+
+//我确实离谱
+#include<bits/stdc++.h>
+
+using namespace std;
+
+#define ll long long
+
+int main() {
+    ll n;
+    scanf("%lld",&n);
+    vector<int> res(n+1,0);
+    //先依次询问跟第一个数的异或（因为连续异或会得到原数）
+    vector<ll> Xore(n+1,0);
+    int zero=-1;
+    for(int i=2;i<=n;i++) {    //数字序列的序号有没有要求我忘记了qwq
+        printf("XOR %d 1\n",i);
+        fflush(stdout);
+        ll ans;
+        scanf("%lld",&ans);
+        Xore[i]=ans;
+        if(ans==0) zero=i;
+    }
+    //两个相同的数最后异或得到0
+    if(zero!=-1) {
+        //就是有一个数跟第一个数一样的意思
+        printf("AND %d 1\n",zero);
+        fflush(stdout); 
+        ll ans;
+        scanf("%lld",&ans);
+        res[1]=ans;
+        /*
+        for(int i=2;i<=n;i++) {
+            res[i]=Xore[i]^res[1];               <改bug：这个要删掉，最后做这个>
+        }
+        */
+    }
+    else {
+        //没有跟第一个数相同的数，那就要找是不是有后面两个数一样
+        //我记得时间卡到2，循环跑了，不是再想办法
+        int same1=0,same2=0;
+        for(int i=2;i<n;i++) {
+            for(int j=i+1;j<=n;j++) {
+                if(Xore[i]==Xore[j]) {  //找到了
+                    same1=i;
+                    same2=j;
+                }
+            }
+        }
+        if(same1&&same2) {  //找到了
+            printf("AND %d %d\n",same1,same2);
+            fflush(stdout);
+            ll ans;
+            scanf("%lld",&ans);
+            /*
+            res[same1]=ans;
+            res[same2]=ans;             <改bug：这两句删掉，因为最后要对所有的数再跟第一个进行一次异或，所以除了第一个数后面都应该是第一次异或的结果，不能填原数,同理下一句也改了>
+            */
+            //res[1]=Xore[same1]^res[same1];
+            res[1]=Xore[same1]^ans;
+        }
+        //也可能每个数都不一样，然后根据大佬的思路，找的是跟第一个数异或得到1的数（这个数与第一个数除了最后一位其他都一样）和异或的得到2的数（这个数跟第一个数除了倒数的第二位都一样）
+        //那这两个数分别跟第一个数并得到的数就可以知道前面一样的数、确定不一样的数
+        else {
+            int temp1=0,temp2=0;
+            for(int i=2;i<=n;i++) {
+                if(Xore[i]==1) {
+                    temp1=i;
+                    break;
+                }
+            }
+            //一定会有这个数的，因为数的范围和数的个数刚好是一样的
+            for(int i=2;i<=n;i++) 
+                if(Xore[i]==2) {
+                    temp2=i;
+                    break;
+                }
+            ll ans1;;
+            printf("AND %d 1\n",temp1);  
+            fflush(stdout);
+            scanf("%lld",&ans1);    //这个数只有最后一个数不确定，异或为2的数只有倒数第二个数不一样，所以可以通过异或为2的数跟第一个数的并确定倒数第一个数。
+            //确定了倒数第一个数，并之后的数就可以是第一个数）
+            ll ans2;
+            printf("AND %d 1\n",temp2);
+            fflush(stdout);
+            scanf("%lld",&ans2);
+            /*
+            if((ans2&1LL)!=(ans1&1LL)) {//最后一位数需要修改
+                if(((ans2&1LL)==0)&&((ans1&1LL)==1)) {
+                    res[1]=ans1-1;
+                }
+                if(((ans2&1)==1)&&((ans1&1)==0)) {           <改bug：这一段应该是没问题，但是第二遍看的时候改的稍微不那么丑陋一点>
+                    res[1]=ans1+1;
+                }
+            }
+            */
+            //因为ans1一定是较小数，最后一位一定是0，所以只需要判断ans2最后一位是不是1
+            if(ans2%2==1) {//最后一位数需要修改
+                res[1]=ans1+1;
+            }
+            else res[1]=ans1;
+        }
+    }
+    for(int i=2;i<=n;i++)
+        res[i]=Xore[i]^res[1];
+    printf("!");
+    for(int i=1;i<=n;i++) {
+        printf(" %d",res[i]);
+    }
+    printf("\n");
+    return 0;
+}    
+//嘻嘻夸一夸自己
 
 Day 5
 T1: https://codeforces.com/problemset/problem/1452/A
@@ -1445,7 +1573,7 @@ int main() {
     return 0;
 }
 //既然做的非常顺畅就没啥好说的
-//完了然后后面的三道题我都没做过
+//完了然后后面的三道题我都没做
 T4：https://codeforces.com/problemset/problem/1452/D
 T5：https://codeforces.com/problemset/problem/1452/E
 T6：https://codeforces.com/problemset/problem/1452/F
