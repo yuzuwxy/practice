@@ -2826,6 +2826,10 @@ T3:https://codeforces.com/problemset/problem/1480/C
 T4:https://codeforces.com/problemset/problem/1480/D
 T5:https://codeforces.com/problemset/problem/1480/E
 
-
+Day不知道多少了都，鸽了好久
+2.20
+T1：https://codeforces.com/problemset/problem/1459/A
+//一个不知道为什么会wa掉的题，虽然题目没看懂但是误打误撞合上了，明明查了标程感觉跟我的明明一样但是就是wa掉了。
+题意：同一张牌上写了红色和蓝色的数字，一共有n张牌，可以随意变换这些牌的顺序，可以组成两个n位的数，
 
 
