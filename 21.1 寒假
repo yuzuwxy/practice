@@ -2833,3 +2833,50 @@ T1：https://codeforces.com/problemset/problem/1459/A
 题意：同一张牌上写了红色和蓝色的数字，一共有n张牌，可以随意变换这些牌的顺序，可以组成两个n位的数，
 
 
+Day 还是不知道都多少了，嘤嘤嘤天天玩气死了 2.22
+#include<iostream>
+#include<cmath>
+#include<string>
+#include<algorithm>
+#include<cstring>
+#include<cstdio>
+#include<bits/stdc++.h>
+
+#define ll long long
+#define MAXN 100007
+#define MOD (ll)1e9+7
+
+using namespace std;
+
+/*
+    先捋一下，前缀和怎么求啊
+    要精确到现在某一个数，这个数不一定是整的一块，方便求我需要知道前面有几个块，先用等比数列求和公式求个数，然后用等差数列求和公式求和。
+    个数递增是乘了前一个的2，记录现在是第几个块，就可以知道这一块是奇数块还是偶数块，这一块求和比较好求。
+    所以总的需求有这些：
+        现在是第几块（为了知道应该加奇数列还是偶数列）
+        奇数块有多少（对所有的奇数求和)
+        同理，偶数块有多少
+        整块的一共有多少个数（算后边零散的）
+*/
+
+ll solve(ll x) {
+    ll odd_num=0,even_num=0;   //记录奇数块和偶数块的数量
+    ll odd_sum=0,even_sum=0,cnt=1;   //记录奇数块和偶数块的和
+    ll sum=0;
+    for(ll i=1,cnt=1,odd_num=0,even_num=0;i<=x;i+=i,cnt++) {
+        if(cnt%2!=0) {
+            //现在是第cnt个数字块，这个数字块有i个数，前面一共有odd_num个奇数数字块1，4，16
+            ll temp=((fpow(4,odd_num)-1)%MOD)/3;
+            sum+=(i%MOD)*(
+            odd_num++;
+        }   
+
+
+
+int main() {
+    ll l,r;
+    scanf("%lld%lld",&l,&r);
+    printf("%lld\n",(solve(r)%MOD-solve(l-1)%MOD)%MOD);   //前缀和
+    return 0;
+}
+//没写完，数学真难
