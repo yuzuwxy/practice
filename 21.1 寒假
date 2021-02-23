@@ -2880,3 +2880,225 @@ int main() {
     return 0;
 }
 //没写完，数学真难
+
+//这一版是错的，淦我还以为自己机智坏了，明天继续改
+#include<iostream>
+#include<cmath>
+#include<string>
+#include<algorithm>
+#include<cstring>
+#include<cstdio>
+#include<bits/stdc++.h>
+
+#define ll long long
+#define MAXN 100007
+#define MOD (ll)1e9+7
+
+using namespace std;
+
+/*
+    先捋一下，前缀和怎么求啊
+    要精确到现在某一个数，这个数不一定是整的一块，方便求我需要知道前面有几个块，先用等比数列求和公式求个数，然后用等差数列求和公式求和。
+    个数递增是乘了前一个的2，记录现在是第几个块，就可以知道这一块是奇数块还是偶数块，这一块求和比较好求。
+    所以总的需求有这些：
+        现在是第几块（为了知道应该加奇数列还是偶数列）
+        奇数块有多少（对所有的奇数求和)
+        同理，偶数块有多少
+        整块的一共有多少个数（算后边零散的）
+*/
+
+ll solve(ll x) {
+    ll odd_num=0,even_num=0;   //记录奇数块和偶数块的数量
+    ll cnt=1;   //记录奇数块和偶数块的和
+    ll sum=0;
+    for(ll i=1,cnt=1,odd_num=0,even_num=0;i<=x;i+=i,cnt++) {
+        if(cnt%2!=0) {
+            //现在是第cnt个数字块，这个数字块有i个数，前面一共有odd_num个奇数
+            sum+=(((((2*odd_num+1)%MOD)+((2*((odd_num+i)%MOD)-1)%MOD))%MOD)*(i%MOD))%MOD;
+            odd_num+=i;
+            x-=i;
+        } 
+        if(cnt%2==0) {
+            sum+=(((((2*even_num+2)%MOD)+((2*((even_num+i)%MOD))%MOD))%MOD)*(i%MOD))%MOD;   
+            even_num+=i;
+            x-=i;
+        }
+    }
+    if(cnt%2==0) {//接下来该加奇数
+        sum+=(((((2*odd_num+1)%MOD)+((2*((x-even_num)%MOD)-1)%MOD))%MOD)*((x-odd_num-even_num)%MOD))%MOD;
+    }
+    else {//接下来该加偶数
+        sum+=(((((2*even_num+2)%MOD)+((2*((x-odd_num)%MOD))%MOD))%MOD)*((x-odd_num-even_num)%MOD))%MOD;  
+    }
+    return sum%MOD;
+}
+
+
+int main() {
+    ll l,r;
+    scanf("%lld%lld",&l,&r);
+    printf("%lld\n",(solve(r)%MOD-solve(l-1)%MOD)%MOD);   //前缀和
+    return 0;
+}
+
+T1:https://codeforces.com/problemset/problem/1151/A
+题意：碱基序列ATCG是一个目标序列。给出一串大写字母，对每个字母可以变为前一个或者后一个（注意A的前一个是Z，Z的后一个是A），最少进行多少次操作可以使ATCG是变后字符串的子串（只在原串前后
+	  去掉若干个字符。
+思路：字符串长度最大是50，这么小的数不暴力都对不起这题。
+#include<iostream>
+#include<cstdio>
+#include<bits/stdc++.h>
+
+#define MAXN (int)1e5+7
+#define ll long long
+
+using namespace std;
+
+char ch[55];
+
+int main() {
+    //既然n只有50，我要开始暴力了
+    //ACTG
+    int n;
+    scanf("%d",&n); 
+    scanf("%s",ch);
+    int ans=0x7fffffff;
+    for(int i=3;i<n;i++) {
+        int sum=0;
+        sum+=min(abs(ch[i]-'G'),26-abs(ch[i]-'G'));
+        sum+=min(abs(ch[i-1]-'T'),26-abs(ch[i-1]-'T'));
+        sum+=min(abs(ch[i-2]-'C'),26-abs(ch[i-2]-'C'));
+        sum+=min(abs(ch[i-3]-'A'),26-abs(ch[i-3]-'A'));
+        ans=min(ans,sum);
+    }
+    printf("%d\n",ans);
+    return 0;
+}
+
+Day还是不知道多少 2.23
+T1：https://codeforces.com/problemset/problem/1025/A
+题意：每次操作可以把字符串中出现次数大于1的字母全部变为另一个字母，问是否可以多次操作后把字符串中的所有字符变为同一个
+思路：稍微一想就知道只要有一个字符出现次数大于一，就可以把所有字符变成同一个。
+#include<iostream>
+#include<cstdio>
+#include<bits/stdc++.h>
+
+#define MAXN (int)1e5+7
+#define ll long long
+
+using namespace std;
+
+int main() {
+    int n;
+    scanf("%d",&n);
+    string s;
+    cin>>s;
+    int num[30]={0};
+    for(int i=0;i<n;i++) {
+        num[s[i]-'a']++;
+    }
+    int flag=0;
+    for(int i=0;i<26;i++) {
+        if(num[i]>1) flag=1;
+    }
+    if(flag==0&&n>1) printf("NO\n");      //注意这里的n>1是个坑。判断是不是每个字符都只出现了一次，有一种特殊情况是字符串中只含有一个字符
+    else printf("YES\n");
+    return 0;
+}
+
+T2：https://codeforces.com/problemset/problem/1025/B
+题意：给出若干个字符对，是否可以找出一个数字，这个数字可以被没对字符中的至少一个整除，如果有输出任意一个满足条件的数，否则输出-1.
+思路：好像有简单办法稍微用点数学知识。
+	  第一下想到的是暴力。算出第一对数字两个数所有的质因数，然后一个一个一对一对的判断。然后又觉得有点太暴力了，就查了题解。发现这么暴力真的可以。然后代码不太会写qwq
+#include <bits/stdc++.h>
+using namespace std;
+
+#define ll long long
+#define MAXN (int)1e5+7
+
+int a[150007],b[150007];
+int pre[150007]={0};
+
+int main() {
+	ll n;
+	scanf("%lld",&n);
+	//scanf("%lld%lld",&a1,&b1);
+	for(int i=1;i<=n;i++) {
+		scanf("%d%d",&a[i],&b[i]);
+	}
+
+	int cnt=0;
+	for(ll i=2;i*i<=a[1];i++)    //这是找出质因数的部分，如果不会还是记一下的好
+		if(a[1]%i==0) {
+			pre[++cnt]=i;
+			while(a[1]%i==0) 
+				a[1]/=i;
+		}
+	if(a[1]>1) pre[++cnt]=a[1];   //注意这一句，不要漏掉最后一个质数
+
+	for(ll i=2;i*i<=b[1];i++) 
+		if(b[1]%i==0) {
+			pre[++cnt]=i;
+			while(b[1]%i==0) b[1]/=i;
+		}
+	if(b[1]>1) pre[++cnt]=b[1];
+
+	for(int i=1;i<=cnt;i++) {   //循环第一对所有的质因数
+		int flag=0;
+		for(int j=2;j<=n;j++) {    //循环后边所有的数
+			if(a[j]%pre[i]!=0&&b[j]%pre[i]!=0) {
+				flag=1;
+				break;
+			}
+		}
+		if(flag==0) {
+			printf("%d\n",pre[i]);
+			return 0;
+		}
+	}
+	printf("-1\n");
+	return 0;
+}
+//大佬还是大佬
+
+T3：https://codeforces.com/problemset/problem/1025/C
+//这个题也可耻地看了题解，最后真的是简单题
+//一来没啥思路，知道思路了不会写代码
+题意：一串字符串只含有字符b和w，可以在字符串的任意位置截断字符串，然后将两段字符分别对称之后再首尾相连得到新的字符串。进行若干次操作，问最多得到形如"bwbwbwbw……"这样的子串最长是多长。
+思路：发现问题就可能是突破点——为啥进行若干次变换最大值是定值呢？
+	  中间截断然后首尾颠倒等价于将原字符串首尾相连形成一个环，在环的任意处截断形成新的字符串
+//查题解恍然大悟知道了思路，然后不会写代码
+//学学，学学
+#include<iostream>
+#include<cmath>
+#include<string>
+#include<algorithm>
+#include<cstring>
+#include<bits/stdc++.h>
+#include<cstdio>
+#include<algorithm>
+#include<vector>
+
+#define Maxn (int)1e5+7
+#define ll long long
+
+using namespace std;
+
+int main() {
+	char s[2*Maxn];
+	scanf("%s",s);
+	int len=strlen(s);
+	memcpy(s+len,s,len);    //原字符串后边再连一段原字符串
+	len<<=1;
+	int ans=1;
+	for(int i=1;i<len;i++) {    //这样就相当于是当环跑了
+		int cnt=1;
+		while(s[i]!=s[i-1]&&i<len) cnt++,i++;    
+		ans=max(ans,cnt);
+	}
+	len>>=1;
+	printf("%d\n",min(len,ans));    //这一步是个坑。有可能原字符串就是bwbwbwb这样的
+	return 0;
+}
+//学学！
+//学大佬打代码之前自己写了一版%的，可以再试着改改我觉得可以
