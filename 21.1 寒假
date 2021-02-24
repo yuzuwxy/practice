@@ -3102,3 +3102,65 @@ int main() {
 }
 //学学！
 //学大佬打代码之前自己写了一版%的，可以再试着改改我觉得可以
+
+2.24
+T2：https://codeforces.com/problemset/problem/1185/B
+//这题真的好考验代码能力啊
+#include <bits/stdc++.h>
+using namespace std;
+
+#define ll long long
+#define MAXN (int)1e5
+
+char a[MAXN*10+7],b[MAXN*10+7];
+
+
+int main() {
+	int n;
+	scanf("%d",&n);
+	while(n--) {
+		scanf("%s%s",a,b);
+		int lena=strlen(a);
+		int lenb=strlen(b);
+		int i=0,j=0;
+		int flag=0;
+		if(lena>lenb) {
+			printf("NO\n");
+			continue;
+		}
+		for(i;i<lena;i++) {
+			int counta=1;
+			for(counta; ;counta++) 
+				if(a[i+counta]!=a[i]) break;
+			i+=counta-1;
+			//  printf("%d %d\n",counta,i);
+
+			int countb=1;
+			if(b[j]!=a[i]) {
+				flag=1;
+				printf("NO\n");
+				break;
+			}
+			for(j;j<lenb;j++) {
+				for(countb; ;countb++) 
+					if(b[j+countb]!=b[j]) break;
+				j+=countb;
+				break;
+			}
+			// printf("%d %d\n",countb,j);
+
+			if(counta>countb) {
+				flag=1;
+				printf("NO\n");
+				break;
+			}
+		}
+		if(j!=lenb&&flag==0) {
+			printf("NO\n");
+			continue;
+		}
+		if(flag==0) printf("YES\n");
+	}
+	return 0;
+}
+//仔细看看吧，瞄了一眼题解恍然大悟才会做的
