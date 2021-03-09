@@ -3501,3 +3501,67 @@ int main(){
 }
 
 //秃头也要看deque和线段树，昨天和今天都被坑了
+
+
+3.7 ICPC区域赛热身赛（？）
+
+链接：https://ac.nowcoder.com/acm/contest/12606/H
+来源：牛客网
+
+题目描述 
+
+
+Alice and Bob are playing a game on a simple connected graph with N nodes and M edges.
+Alice colors each edge in the graph red or blue.
+A path is a sequence of edges where each pair of consecutive edges have a node in common. If the first edge in the pair is of a different color than the second edge, then that is a ''color change.''
+After Alice colors the graph, Bob chooses a path that begins at node 1 and ends at node N. He can choose any path on the graph, but he wants to minimize the number of color changes in the path. Alice wants to choose an edge coloring to maximize the number of color changes Bob must make. What is the maximum number of color changes she can force Bob to make, regardless of which path he chooses? changes she can force Bob to make, regardless of which path he chooses?
+/*题目粘成啥样我管不了了
+ *一个简单的最短路问题，bfs就可以解决
+ *题意很好懂，看完就知道答案是最短路径-1
+ *问题就在我不会用bfs写最短路，我只会dfs写最短路
+ *但是我现在好像会了
+*/
+//dfs写完递归超限了，太多层，而且1e5x1e5的数组也太大了点（甚至尝试了用string数组存，因为不会用二维的vector）。
+//更神奇的是做这个题之前想到了所编代码的点，就是没想起来bfs是怎么一回事
+#include<bits/stdc++.h>
+
+#define MAXN (int) 1e5
+#define MOD  (int)1e9+7
+#define ll   long long
+
+using namespace std;
+
+//尝试了八百遍了吧有
+vector<vector<int> > mat(MAXN+7);
+// int f[MAXN+7];
+int dis[MAXN+7];
+int q[MAXN+7];
+
+int main() {
+    int n, m ;
+    scanf("%d%d",&n, &m) ;
+    for (int i = 1; i <= m; i ++) {
+        int x, y;
+        scanf("%d%d", &x, &y);
+        mat[x].push_back(y);
+        mat[y].push_back(x);
+    }
+    
+    int head = 1, tail=2;
+    q[head] = 1;
+    
+    while(head < tail) {
+        int len  = mat[q[head]].size();      //队头队尾，用数组模拟队列。每次都要把所有扩展到的结点加入队列，最先到达的目标点就是最短路
+        int temp = q[head];
+        for(int i = 0; i<len; i ++) {
+            if(dis[mat[temp][i]] == 0) {     //dis存储最短路长度，顺便查重
+                q[tail++] = mat[temp][i]; 
+                dis[mat[temp][i]] = dis[temp] + 1;      //下一点继承它的父节点（图里没有这个概念吧但是就是这个意思）的最短路，每个点存的都是最短路（可以保证）
+            }
+        }
+        head++;
+    }
+    printf("%d\n",dis[n]-1);  
+    return 0;
+}
+//滚去多刷几道题
