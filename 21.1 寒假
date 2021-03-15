@@ -3565,3 +3565,71 @@ int main() {
     return 0;
 }
 //滚去多刷几道题
+
+
+3.15
+https://codeforces.com/contest/1496/problem/B
+题面就不嗦了，自己再捋一遍思路
+稍微要想一下，首先找到mex，因为数列是一个本该连续的数列要找到第一个没有出现的整数，排序后把索引和元素对一下就可以找到。然后要注意(max+mex)/2的值，要把这个值添到数列里，算出来的数不是
+max也不是mex是一个另外的数，也就是说不管算多少遍k是多少，要插进数列里的这个数是不变的。那就需要判断这个数，有没有在原本的数列里出现过。
+最后考虑特殊情况（根据题目给的样例)，如果k是0，那不同的数字直接就是n个；如果给出的数列就是连续的呢，那么第一个没有出现的整数就是这串连续数列的下一个，max就是最后一个，要插入的数是这
+两个数除以2，题目有提到向上取整，所以得到的数就是n，也就是这串数列的下一个，依此类推，后面的k-1次操作都是往后添加一个数，答案就是n+k。
+实际打代码还有一些要注意到的细节。
+一开始卡在了没注意到（max+mex）/2的特点
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<cstring>
+#include<cmath>
+#include<algorithm>
+#include<vector>
+#include<set>
+#include<bits/stdc++.h>
+
+using namespace std;
+
+#define ll long long
+#define MAXN (int)1e5
+#define MOD (int)1e9+7
+
+int main() {
+    int t;
+    scanf("%d",&t);
+    vector<ll> arr(MAXN+7);
+    while(t--) {
+        int n,k;
+        scanf("%d%d",&n,&k);
+        for(int i=0;i<n;i++) {
+            scanf("%lld",&arr[i]);
+        }
+        if(k==0) {
+            printf("%d\n",n);
+            continue;
+        }
+
+        sort(arr.begin(),arr.begin()+n);		//这里排序跟数组排序有一点不一样（每次都要疑惑啊为啥报错）
+        int temp=-1;
+        for(int i=0;i<n;i++) {              //这里，找到第一个没有出现的整数，之前想到了没敢打
+            if(arr[i]>i) {
+                temp=i;
+                break;
+            }
+        }
+        // printf("temp=%d\n",temp);
+        if(temp==-1) {    //本来就是连续的数列
+            printf("%d\n",n+k);
+            continue;
+        }
+        ll ins=ceil((temp*1.0+arr[n-1]*1.0)/2);			//还有这里，要先得到小数然后向上取整
+        vector<ll>::iterator it=lower_bound(arr.begin(),arr.begin()+n,ins);		//前面尖括号里要跟定义vector时候的数据类型一致，最后一个参数也要跟vector类型一致
+        int idx=&*it-&arr[0];			//迭代器先取值然后取址，要找的是第几个数就得到几，不是索引
+        // printf("idx=%d\n",idx);
+        if(arr[idx]!=ins) {
+            printf("%d\n",n+1);
+        }
+        else printf("%d\n",n);
+    }
+    return 0;
+}
+//努力提升代码能力orz
+
