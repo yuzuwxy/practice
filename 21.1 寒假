@@ -3633,3 +3633,117 @@ int main() {
 }
 //努力提升代码能力orz
 
+//是的我又要接着往后续了
+https://codeforces.com/problemset/problem/1499/D
+//熬了三天淦发现关键算法错了
+
+#include<iostream>
+#include<cstdio>
+#include<algorithm>
+#include<cstring>
+#include<string>
+#include<vector>
+#include<set>
+#include<map>
+#include<bits/stdc++.h>
+ 
+using namespace std;
+ 
+#define MAXN (int)1e5
+#define MOD (int)1e9+7
+#define llmaxn 9223372036854775807
+#define ll long long
+ 
+ll primec[MAXN]={0};
+ 
+//还是要背模板啊背模板
+ 
+int p[(int)2e7+7];
+int pf[(int)1e7+7]={0};
+int topp=0;
+int f[(int)1e7+7]={0};
+ 
+void prime() {
+    for (int i=2;i<10000002;i++)   //不要等号，因为判别没有=，不然会把最后一个数包括进去
+	{
+        // cout<<i<<' ';
+		if (!pf[i])   
+			p[++topp]=i;
+		for (int j=1;j<=topp&&p[j]*i<10000002;j++)
+		{
+            // cout<<1<<' ';
+			pf[i*p[j]]=true;     //相乘之后倍数一定不是质数，往后筛了好几位
+			if (i%p[j]==0)break;   //6会被2和3筛，加上这一句可以使一个数只被一个质数筛掉，可以提高效率
+		}
+	}
+    // cout<<1<<' ';
+    // for(int i=1;i<=100;i++) cout<<p[i]<<' ';
+}
+/*
+int pc[MAXN+7]={0};
+
+int doit(int x) {
+    int tot=0;
+    for(int i=1;i*i<=x;i++) 
+        if(x%i==0) { 
+            pc[++tot]=i;
+            pc[++tot]=x/i;
+        }
+    return tot;
+}
+*/
+int func(int x) {
+    int tot=0;
+    for(int i=1;p[i]<=x;i++) 
+        if(x%p[i]==0) tot++;   //为啥看不懂我这在干嘛了，质因子的总数
+    
+    // printf("primetot=%d\n",tot);
+ 
+    int a=2,q=tot;
+    int ans=1;
+    if(q==0) return 1;
+    else {
+        while(q>0) {
+            if(q&1) ans*=a;
+            a*=a;
+            q>>=1;
+        }
+    }
+    // printf("tempans=%d\n",ans);
+    return ans;
+}
+ 
+int main() {
+    int t;
+    scanf("%d",&t);
+    while(t--) {
+        ll c,d,x;
+        scanf("%lld%lld%lld",&c,&d,&x);
+        prime();    //求质数
+        // int tot=doit(x);
+        ll ans=0;
+        for(ll i=1;i*i<=x;i++) {
+            if(x%i==0) {
+                int cnt=(i+d)/c;
+                if(cnt&&f[cnt]==0&&(i+d)%c==0) {
+                    f[cnt]=1;
+                    ans+=func(cnt);
+                }
+                if(i*i!=x) {
+                    cnt=(x/i+d)/c;
+                    if(cnt&&f[cnt]==0&&(x/i+d)%c==0) {
+                        f[cnt]=1;
+                        ans+=func(cnt);
+                    }
+                }
+            }
+        }
+        memset(f,0,sizeof(f));
+        printf("%lld\n",ans);
+    }
+    return 0;
+}
+
+//1e7的数据范围哈，欧拉筛是个O(n)的，快速幂是个log的，求因数是个根号的，叠在一起又加在一起是要被卡的呜呜呜，还经历了好几次的RE呜呜呜，真难。
+//好不容易以为自己会了的数论呜呜呜
+//找到大佬的代码，用埃氏筛好一点
